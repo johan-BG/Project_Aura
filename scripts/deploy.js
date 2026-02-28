@@ -16,7 +16,10 @@ async function main() {
         timestamp: new Date().toISOString(),
         contracts: {}
     };
-
+    const gasOverrides = {
+        maxFeePerGas: ethers.utils.parseUnits('100', 'gwei'),
+        maxPriorityFeePerGas: ethers.utils.parseUnits('2', 'gwei'),
+        };
     // Deploy BooCoin
     console.log("Deploying BooCoin...");
     const BooCoin = await hre.ethers.getContractFactory("BooCoin");
@@ -41,13 +44,20 @@ async function main() {
     deploymentData.contracts.SingleSwapToken = singleSwapToken.address;
     console.log(`✅ SingleSwapToken deployed at ${singleSwapToken.address}`);
 
-    // Deploy SwapMultiHop
+    //Deploy SwapMultiHop
     console.log("Deploying SwapMultiHop...");
     const SwapMultiHop = await hre.ethers.getContractFactory("SwapMultiHop");
     const swapMultiHop = await SwapMultiHop.deploy();
     await swapMultiHop.deployed();
     deploymentData.contracts.SwapMultiHop = swapMultiHop.address;
     console.log(`✅ SwapMultiHop deployed at ${swapMultiHop.address}`);
+
+    console.log("Deploying UserStorageData...");
+    const UserStorageData = await hre.ethers.getContractFactory("UserStorageData");
+    const userStorageData = await UserStorageData.deploy();
+    await userStorageData.deployed();
+    deploymentData.contracts.UserStorageData = userStorageData.address;
+    console.log(`✅ UserStorageData deployed at ${userStorageData.address}`);
 
     // Save to address.json
     const addressesPath = path.join(__dirname, "../Context/address.json");

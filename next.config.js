@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactCompiler: true,
   reactStrictMode: true,
-  swcMinify: true,
-}
+  images: {
+    domains: ["raw.githubusercontent.com", "gateway.thegraph.com"],
+  }
+};
 
-module.exports = nextConfig
+export default nextConfig;

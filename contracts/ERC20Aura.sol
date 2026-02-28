@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract AuraCoin is ERC20{
 
-    constructor() ERC20("A","Aura"){
+    constructor() ERC20("Aura","A"){
         _mint(msg.sender,100000*10**decimals());
     }
 }

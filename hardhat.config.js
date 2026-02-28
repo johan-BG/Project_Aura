@@ -1,13 +1,10 @@
-require("@nomicfoundation/hardhat-toolbox");
-//require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-waffle");
 require("dotenv").config();
-/** @type import('hardhat/config').HardhatUserConfig */
-
 module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.17",
+        version: "0.7.6",
         settings: {
           evmVersion: "istanbul",
           optimizer: {
@@ -20,32 +17,19 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      forking: {
-        url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
-      },
+      initialBaseFeePerGas: 0,
+      chainId: 31337, 
+      // forking: {
+      //   url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`, 
+      // },
     },
+    localhost: {
+      url: "http://127.0.0.1:8545",
+    },
+    sepolia: {
+      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.ACCOUNT_KEY}`],
+      chainId: 11155111,
+    }
   },
 };
-
-// require("@nomiclabs/hardhat-waffle");
-
-// module.exports = {
-//   solidity: {
-//     version: "0.7.6",
-//     settings: {
-//       optimizer: {
-//         enabled: true,
-//         runs: 5000,
-//         details: { yul: false },
-//       },
-//     },
-//   },
-//   networks: {
-//     hardhat: {
-//       forking: {
-//         url: "your",
-//         accounts: [`0x${"your"}`],
-//       },
-//     },
-//   },
-// };

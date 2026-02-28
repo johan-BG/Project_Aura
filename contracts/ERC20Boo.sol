@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract BooCoin is ERC20{
 
-    constructor() ERC20("BC","Boo"){
+    constructor() ERC20("Boo","BC"){
         _mint(msg.sender,100000*10**decimals());
     }
 }

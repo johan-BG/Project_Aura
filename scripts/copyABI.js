@@ -13,7 +13,8 @@ const filesToCopy = [
   "Interfaces\\IWETH.sol\\IWETH.json",
   "SwapMultiHop.sol\\SwapMultiHop.json",
   "SwapToken.sol\\SingleSwapToken.json",
-  "..\\@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol\\ERC20.json"
+  "storeUserData.sol\\UserStorageData.json"
+  //"..\\@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol\\ERC20.json",
 ];
 
 // Ensure destination directory exists

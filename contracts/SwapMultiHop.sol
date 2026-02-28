@@ -12,18 +12,16 @@ contract SwapMultiHop{
     address public constant USDC =0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address public constant WETH9 =0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-    function swapExactInputMultiHop(uint amountIn) external returns(uint amountOut)
+    function swapExactInputMultiHop(address token0,address token1,uint amountIn) external returns(uint amountOut)
     {
-        TransferHelper.safeTransferFrom(WETH9, msg.sender, address(this), amountIn);
-        TransferHelper.safeApprove(WETH9, address(swapRouter),amountIn);
+        TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountIn);
+        TransferHelper.safeApprove(token0, address(swapRouter),amountIn);
 
         ISwapRouter.ExactInputParams memory params = ISwapRouter.ExactInputParams({
             path: abi.encodePacked(
-                WETH9,
+                token0,
                 uint24(3000),
-                USDC,
-                uint24(100),
-                DAI
+                token1
             ),
             recipient:msg.sender,
             deadline:block.timestamp,
@@ -32,18 +30,16 @@ contract SwapMultiHop{
         });
         amountOut=swapRouter.exactInput(params);
     }
-    function swapExactOutputMultiHop(uint amountOut,uint amountInMaximum) external returns(uint amountIn)
+    function swapExactOutputMultiHop(address token0,address token1,uint amountOut,uint amountInMaximum) external returns(uint amountIn)
     {
-        TransferHelper.safeTransferFrom(WETH9, msg.sender, address(this), amountInMaximum);
-        TransferHelper.safeApprove(WETH9, address(swapRouter),amountInMaximum);
+        TransferHelper.safeTransferFrom(token0, msg.sender, address(this), amountInMaximum);
+        TransferHelper.safeApprove(token0, address(swapRouter),amountInMaximum);
 
         ISwapRouter.ExactOutputParams memory params = ISwapRouter.ExactOutputParams({
             path: abi.encodePacked(
-                DAI,
+                token0,
                 uint24(100),
-                USDC,
-                uint24(3000),
-                WETH9
+                token1
             ),
             recipient:msg.sender,
             deadline:block.timestamp,
@@ -53,8 +49,8 @@ contract SwapMultiHop{
         amountIn=swapRouter.exactOutput(params);
         if(amountIn<amountInMaximum)
         {
-            TransferHelper.safeApprove(WETH9, address(swapRouter), 0);
-            TransferHelper.safeTransfer(WETH9, msg.sender, amountInMaximum-amountIn);
+            TransferHelper.safeApprove(token1, address(swapRouter), 0);
+            TransferHelper.safeTransfer(token1, msg.sender, amountInMaximum-amountIn);
         }
     }
 }
