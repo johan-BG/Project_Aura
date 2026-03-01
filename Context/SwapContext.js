@@ -78,7 +78,7 @@ export const SwapTokenContextProvider = ({ children }) => {
       const { ChainId , name } = await newProvider.getNetwork();
       const address = await newSigner.getAddress();
       const netconfig=NETWORKS[DEFAULT_CHAIN_ID];
-
+      console.log(chainId,name,address);
       setProvider(newProvider);
       setSigner(newSigner);
       setAccount(address);
