@@ -92,4 +92,4 @@ export const NETWORKS = {
   }
 };
 export const TOKEN_RESULTS=20;
-export const DEFAULT_CHAIN_ID = process.env.NODE_ENV === "development" ? 31337 : 11155111;
+export const DEFAULT_CHAIN_ID = 31337;
