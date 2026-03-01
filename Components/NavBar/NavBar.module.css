@@ -82,7 +82,7 @@
     color: #cff80b;
 }
 
-.NavBar_box_right button {
+.NavBar_box_right button:not(.hamburger) {
     background-color: #1e1e1e;
     border: none;
     outline: none;
@@ -113,6 +113,7 @@
 }
 
 /* ---- MOBILE DRAWER MENU ---- */
+/* Always hidden by default — only revealed inside media queries below */
 .mobileMenu {
     display: none;
     flex-direction: column;
@@ -121,10 +122,6 @@
     border-radius: 0.5rem;
     margin-top: 0.75rem;
     overflow: hidden;
-}
-
-.mobileMenu.open {
-    display: flex;
 }
 
 .mobileMenu a {
@@ -143,8 +140,15 @@
     background-color: #2a2a2a;
 }
 
-/* ---- TABLET (≤ 768px) ---- */
-@media only screen and (max-width: 48em) {
+/* ---- TABLET (< 768px) ---- */
+/* Mobile drawer is only allowed to open on tablet/mobile */
+@media only screen and (max-width: 47.9375em) {
+
+    /* Allow the drawer to open only on tablet/mobile */
+    .mobileMenu.open {
+        display: flex;
+    }
+
     .NavBar_box {
         grid-template-columns: 1fr auto;
     }
@@ -161,7 +165,7 @@
         justify-content: flex-end;
     }
 
-    .NavBar_box_right button {
+    .NavBar_box_right button:not(.hamburger) {
         max-width: 140px;
         font-size: 0.9rem;
         padding: 0.65rem 1rem;
@@ -182,7 +186,7 @@
         display: none;
     }
 
-    .NavBar_box_right button {
+    .NavBar_box_right button:not(.hamburger) {
         max-width: 130px;
         font-size: 0.85rem;
         padding: 0.6rem 0.9rem;

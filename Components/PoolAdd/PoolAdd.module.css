@@ -8,15 +8,14 @@
   /* constrain on large screens */
   margin: 0 auto;
   /* center container */
-  overflow: hidden;
-  /* prevent children from overflowing the rounded corners */
+  /* Removed overflow: hidden — it clips content on mobile */
   transition: padding 180ms ease, max-width 180ms ease;
 }
 
-/* Slightly reduce padding on very small screens */
+/* Reduce padding on very small screens */
 @media only screen and (max-width: 30em) {
   .PoolAdd_box {
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
 }
 
@@ -73,8 +72,10 @@
 .PoolAdd_box_price_left_fee {
   display: flex;
   align-items: center;
-  line-height: 0;
-  padding: 0.5rem 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  line-height: 1.4;
+  padding: 0.5rem 0.75rem;
   justify-content: space-between;
   border: 1px solid #cff80b;
   margin-top: 1rem;
@@ -96,8 +97,9 @@
 
 .PoolAdd_box_price_left_list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  /* 2-col by default; 3 added above 560px */
+  gap: 0.75rem;
   margin-top: 1rem;
 }
 
@@ -179,7 +181,8 @@
   border-radius: 0.5rem;
   color: #1e1e1e;
   font-size: 1.05rem;
-  min-width: 140px;
+  /* Removed min-width: 140px — caused horizontal overflow on small screens */
+  width: 100%;
   box-sizing: border-box;
 
   /* ensure the pill expands vertically if needed */
@@ -360,8 +363,8 @@
   }
 }
 
-/* ---- ABOVE MOBILE (≥ 560px) ---- */
-@media only screen and (min-width: 35em) {
+/* ---- ABOVE TABLET (≥ 768px) ---- */
+@media only screen and (min-width: 48em) {
   .PoolAdd_box_price {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
