@@ -76,8 +76,33 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     );
 
     // 4. Calculate Position (using Mint Amounts)
-    const ticks = getTickRange(slot0.tick, tickSpacing, true); // True for Full Range
+    const ticks = getTickRange(slot0.tick, tickSpacing,true); // True for Full Range
     
+    let existingTokenId = null;
+    const balance = await contracts.manager.balanceOf(account);
+
+    console.log(`Checking ${balance} existing positions for a match...`);
+
+    for (let i = 0; i < balance; i++) {
+      const tokenId = await contracts.manager.tokenOfOwnerByIndex(account, i);
+      const positionData = await contracts.manager.positions(tokenId);
+
+      // Check if this NFT matches our Pool and Tick Range
+      const isSamePool = 
+        positionData.token0.toLowerCase() === pool.token0.address.toLowerCase() &&
+        positionData.token1.toLowerCase() === pool.token1.address.toLowerCase() &&
+        positionData.fee === fee;
+
+      const isSameRange = 
+        positionData.tickLower === ticks.lower && 
+        positionData.tickUpper === ticks.upper;
+
+      if (isSamePool && isSameRange) {
+        existingTokenId = tokenId;
+        break; // Found it!
+      }
+    }
+
     const position = Position.fromAmounts({
       pool,
       tickLower: ticks.lower,
@@ -88,6 +113,25 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     });
 
     const { amount0: amount0Desired, amount1: amount1Desired } = position.mintAmounts;
+
+    let receipt;
+    if (existingTokenId) {
+      console.log(`Matching position found (ID: ${existingTokenId}). Increasing liquidity...`);
+      
+      const increaseParams = {
+        tokenId: existingTokenId,
+        amount0Desired: amount0Desired.toString(),
+        amount1Desired: amount1Desired.toString(),
+        amount0Min: 0,
+        amount1Min: 0,
+        deadline: Math.floor(Date.now() / 1000) + 1200,
+      };
+
+      const tx = await contracts.manager.increaseLiquidity(increaseParams, { gasLimit: 500000 });
+      receipt = await tx.wait();
+    }
+    else {
+      console.log("No matching position found. Minting new NFT...");
 
     // 5. Execute Transaction
     const params = {
@@ -105,7 +149,8 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     };
 
     const tx = await contracts.manager.mint(params, { gasLimit: 3000000 });
-    const receipt = await tx.wait();
+    receipt = await tx.wait();
+  }
     
     const event = receipt.events.find((e) => e.event === "IncreaseLiquidity");
 

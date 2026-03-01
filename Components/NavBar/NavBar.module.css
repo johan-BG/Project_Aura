@@ -1,105 +1,190 @@
-.NavBar{
+.NavBar {
     width: 90%;
-    margin: 2rem auto;
+    margin: 1.5rem auto;
+    position: relative;
 }
-.NavBar_box{
+
+.NavBar_box {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
-    justify-content: space-between;
-    gap:1rem;
+    gap: 1rem;
 }
-.NavBar_box_left{
+
+/* ---- LEFT ---- */
+.NavBar_box_left {
     display: flex;
-    gap:4rem;
+    gap: 2rem;
     align-items: center;
 }
-.NavBar_box_left_menu{
+
+.NavBar_box_left_menu {
     display: flex;
     align-items: center;
-    gap:2rem;
+    gap: 1.5rem;
 }
-.NavBar_box_left_menu_item{
-    font-size: 1.2rem;
+
+.NavBar_box_left_menu_item {
+    font-size: 1.1rem;
     color: #cff80b;
+    white-space: nowrap;
 }
 
-.NavBar_box_middle{
+/* ---- MIDDLE ---- */
+.NavBar_box_middle {
     background-color: #1e1e1e;
-    width: 80%;
-    padding: 1rem 1.5rem;
-    border-radius: .5rem;
-    margin:0 auto;
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.5rem;
+    margin: 0 auto;
 }
 
-.NavBar_box_middle_search{
+.NavBar_box_middle_search {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     cursor: pointer;
 }
 
-.NavBar_box_middle input{
+.NavBar_box_middle input {
     background-color: transparent;
     outline: none;
     border: none;
     font-size: 1rem;
-    color:#cff80b;
+    color: #cff80b;
+    width: 100%;
 }
 
-.NavBar_box_right{
+/* ---- RIGHT ---- */
+.NavBar_box_right {
     display: flex;
     align-items: center;
-    justify-content: end;
-    gap: 1rem;
+    justify-content: flex-end;
+    gap: 0.75rem;
 }
 
-.NavBar_box_right_box{
+.NavBar_box_right_box {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     background-color: #1e1e1e;
-    padding: .5rem 1.5rem;
-    border-radius: .5rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 0.5rem;
     cursor: pointer;
     text-transform: capitalize;
+    white-space: nowrap;
 }
 
-.NavBar_box_right_box p{
-    font-size: 1.2rem;
-    line-height: 0;
-    color: #cff80b; 
+.NavBar_box_right_box p {
+    font-size: 1rem;
+    line-height: 1;
+    color: #cff80b;
 }
 
-.NavBar_box_right button{
+.NavBar_box_right button {
     background-color: #1e1e1e;
     border: none;
     outline: none;
     color: #cff80b;
     border-radius: 5rem;
-    padding: 1.2rem 1.5rem;
-    font-size: 1.2rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap:1rem;
+    gap: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
 }
- 
-@media only screen and  (max-width:35em){
-    .NavBar{
-        width:90%;
+
+/* ---- HAMBURGER BUTTON ---- */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: #cff80b;
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0.3rem;
+}
+
+/* ---- MOBILE DRAWER MENU ---- */
+.mobileMenu {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background-color: #1e1e1e;
+    border-radius: 0.5rem;
+    margin-top: 0.75rem;
+    overflow: hidden;
+}
+
+.mobileMenu.open {
+    display: flex;
+}
+
+.mobileMenu a {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #2a2a2a;
+    color: #cff80b;
+    font-size: 1.1rem;
+    text-decoration: none;
+}
+
+.mobileMenu a:last-child {
+    border-bottom: none;
+}
+
+.mobileMenu a:active {
+    background-color: #2a2a2a;
+}
+
+/* ---- TABLET (≤ 768px) ---- */
+@media only screen and (max-width: 48em) {
+    .NavBar_box {
+        grid-template-columns: 1fr auto;
     }
-    .NavBar_box{
-        grid-template-columns:  .5fr 1fr;
-    }
-    .NavBar_box_middle{
+
+    .NavBar_box_middle {
         display: none;
     }
-    .NavBar_box_left_menu{
+
+    .NavBar_box_left_menu {
         display: none;
     }
-    .NavBar_box_right_box{
+
+    .NavBar_box_right {
+        justify-content: flex-end;
+    }
+
+    .NavBar_box_right button {
+        max-width: 140px;
+        font-size: 0.9rem;
+        padding: 0.65rem 1rem;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}
+
+/* ---- MOBILE (≤ 560px) ---- */
+@media only screen and (max-width: 35em) {
+    .NavBar {
+        width: 93%;
+    }
+
+    .NavBar_box_right_box {
         display: none;
+    }
+
+    .NavBar_box_right button {
+        max-width: 130px;
+        font-size: 0.85rem;
+        padding: 0.6rem 0.9rem;
     }
 }

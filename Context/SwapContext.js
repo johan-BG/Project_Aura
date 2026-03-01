@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, useCallback ,useMemo} from "react";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
-import { NETWORKS, DEFAULT_CHAIN_ID, ARTIFACTS } from "../config";
+import { NETWORKS, DEFAULT_CHAIN_ID, ARTIFACTS ,TOKEN_RESULTS} from "../config";
 const axios =require("axios");
 import { getLogoUrl } from "../Utils/tokenHelper";
 import { getQuoteExactInput,getQuoteExactOutput } from "../Utils/swapUpdatePrice";
@@ -9,7 +9,7 @@ import { getQuoteExactInput,getQuoteExactOutput } from "../Utils/swapUpdatePrice
 
 const TOP_TOKENS_QUERY = `
 {
-  tokens(orderBy: volumeUSD, orderDirection: desc, first: 20) {
+  tokens(orderBy: volumeUSD, orderDirection: desc, first: ${TOKEN_RESULTS}) {
     id name symbol decimals volumeUSD totalValueLockedUSD txCount totalSupply
   }
 }`;
@@ -145,7 +145,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
 
     const singleSwap= async(isExactOputput,tokenIn,tokenOut,amountIn,amountOut,fee) => {
       try{
-        console.log(tokenIn,tokenOut);
+        
         const swapIn=ethers.utils.parseUnits(amountIn.toString(),tokenIn.decimals);
         const swapOut=ethers.utils.parseUnits(amountOut.toString(),tokenOut.decimals);
         const contract=new ethers.Contract(tokenIn.tokenAddress,ARTIFACTS.ERC20, signer || provider);
@@ -205,6 +205,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       window.ethereum.on("chainChanged", (chainId) => {
       console.log("Network changed to:", parseInt(chainId, 16));
       window.location.reload(); // Re-loads the app on the new network
+      connectWallet();
     });
     }
   }, []);

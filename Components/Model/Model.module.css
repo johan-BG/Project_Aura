@@ -1,43 +1,57 @@
-.Model{
-    position: absolute;
-    inset: 0% 0% 0% 0%;
-    background-color: #1e1e1e5a;
-    display: grid;
+.Model {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(30, 30, 30, 0.75);
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
-    z-index: 1111111111;
+    z-index: 1000000;
+    padding: 1rem;
 }
 
-.Model_box{
+.Model_box {
     background-color: #1e1e1e;
     padding: 2rem;
-    border-radius: 5rem;
+    border-radius: 2rem;
+    width: min(400px, 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
-.Model_box_heading{
+.Model_box_heading {
     display: flex;
-    align-content: center;
+    align-items: center;
     justify-content: space-between;
+    margin-bottom: 1rem;
 }
 
-.Model_box_heading p{
+.Model_box_heading p {
     font-size: 1.2rem;
 }
 
-.Model_box_wallet p{
+.Model_box_wallet p {
     background-color: #cff80b;
     padding: 1rem;
-    border-radius: 5rem;
+    border-radius: 2rem;
     color: #1e1e1e;
-    font-size: 700;
+    font-weight: 700;
     cursor: pointer;
+    text-align: center;
 }
 
-.Model_box_para{
+.Model_box_para {
     padding: 1rem;
-    line-height: 1.2;
+    line-height: 1.4;
     border: 1px solid #cff80b;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* ---- MOBILE (≤ 560px) ---- */
+@media only screen and (max-width: 35em) {
+    .Model_box {
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+    }
 }

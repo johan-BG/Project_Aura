@@ -84,7 +84,6 @@ export const LiquidityProvider = ({ children }) => {
         try {
             if (!signer && !provider) return;
                 const target = signer || provider;
-            console.log(params);
             const poolAddress = await createPool(
                 params.token0.tokenAddress,
                 params.token1.tokenAddress,
@@ -117,6 +116,7 @@ export const LiquidityProvider = ({ children }) => {
             // Refresh the list after saving
             await fetchUserPositions();
             await refreshData();
+            console.log("refreshed");
         } catch (error) {
             console.error("Operation failed:", error);
         }

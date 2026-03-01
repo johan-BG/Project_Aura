@@ -4,9 +4,12 @@
   padding: 1rem;
   box-sizing: border-box;
   width: 100%;
-  max-width: 1100px; /* constrain on large screens */
-  margin: 0 auto; /* center container */
-  overflow: hidden; /* prevent children from overflowing the rounded corners */
+  max-width: 1100px;
+  /* constrain on large screens */
+  margin: 0 auto;
+  /* center container */
+  overflow: hidden;
+  /* prevent children from overflowing the rounded corners */
   transition: padding 180ms ease, max-width 180ms ease;
 }
 
@@ -39,7 +42,8 @@
 /* Mobile-first: single column layout by default so it scales smoothly */
 .PoolAdd_box_price {
   display: grid;
-  grid-template-columns: 1fr; /* stack on mobile */
+  grid-template-columns: 1fr;
+  /* stack on mobile */
   background-color: #1e1e1e;
   padding: 1rem;
   gap: 1rem;
@@ -131,7 +135,8 @@
 
 .PoolAdd_box_deposit_box {
   display: flex;
-  flex-direction: column; /* stack inputs on mobile */
+  flex-direction: column;
+  /* stack inputs on mobile */
   align-items: stretch;
   gap: 0.5rem;
   line-height: 0;
@@ -164,11 +169,13 @@
 /* Pill container: allow natural height for two lines (label + balance) */
 .PoolAdd_box_deposit_box_input {
   display: flex;
-  flex-direction: column; /* token label above, balance below */
+  flex-direction: column;
+  /* token label above, balance below */
   align-items: flex-start;
   gap: 0.25rem;
   background-color: #cff80b;
-  padding: 0.45rem 0.8rem; /* compact padding */
+  padding: 0.45rem 0.8rem;
+  /* compact padding */
   border-radius: 0.5rem;
   color: #1e1e1e;
   font-size: 1.05rem;
@@ -220,8 +227,10 @@
 
   /* important: allow it to be displayed on its own line */
   display: block;
-  white-space: normal; /* allow wrapping if needed */
-  overflow: visible; /* do not clip the text */
+  white-space: normal;
+  /* allow wrapping if needed */
+  overflow: visible;
+  /* do not clip the text */
   text-overflow: clip;
 }
 
@@ -248,7 +257,8 @@
 
 .PoolAdd_box_price_right_range {
   display: grid;
-  grid-template-columns: 1fr; /* stack on mobile */
+  grid-template-columns: 1fr;
+  /* stack on mobile */
   gap: 0.75rem;
 }
 
@@ -311,7 +321,8 @@
 }
 
 .token {
-  position: fixed; /* overlay */
+  position: fixed;
+  /* overlay */
   inset: 0;
   display: flex;
   justify-content: center;
@@ -322,7 +333,7 @@
   z-index: 9999;
 }
 
-.token > * {
+.token>* {
   width: 100%;
   max-width: 720px;
   background-color: #1e1e1e;
@@ -338,6 +349,18 @@
   border-radius: 0.5rem;
 }
 
+/* ---- TABLET (≤ 768px) ---- */
+@media only screen and (max-width: 48em) {
+  .PoolAdd_box_price_left_list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .PoolAdd_box_price_left_token {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---- ABOVE MOBILE (≥ 560px) ---- */
 @media only screen and (min-width: 35em) {
   .PoolAdd_box_price {
     grid-template-columns: repeat(2, 1fr);
@@ -350,7 +373,7 @@
   }
 
   .PoolAdd_box_deposit_box {
-    flex-direction: row; /* side-by-side on larger screens */
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }

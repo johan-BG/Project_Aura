@@ -1,4 +1,4 @@
-.HeroSection{
+.HeroSection {
     width: 90%;
     margin: 2rem auto;
     display: flex;
@@ -7,28 +7,30 @@
     position: relative;
 }
 
-.HeroSection_box{
-    margin-top: 5rem;
+.HeroSection_box {
+    margin-top: 4rem;
     background-color: #1e1e1e;
-    padding: 1rem;
-    border-radius: 5rem;
-    width:30rem
+    padding: 1.2rem;
+    border-radius: 2rem;
+    width: min(30rem, 100%);
 }
 
-.HeroSection_box_heading{
+.HeroSection_box_heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.HeroSection_box_input{
+.HeroSection_box_input {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border: 1px solid #cff80b;
-    border-radius: .5rem;
-    padding-left: 2rem;
+    border-radius: 0.5rem;
+    padding-left: 1rem;
     margin-top: 1rem;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
 }
 
 .inputWrapper {
@@ -36,35 +38,49 @@
     align-items: center;
     gap: 0.5rem;
     flex: 1;
+    min-width: 0;
 }
 
-
-.HeroSection_box_input input{
+.HeroSection_box_input input {
     border: 0;
     outline: 0;
     background-color: transparent;
     color: #cff80b;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    width: 100%;
+    min-width: 0;
 }
 
 .loader {
     animation: spin 1s linear infinite;
 }
 
-.HeroSection_box_input button{
+.HeroSection_box_input button {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap:1rem;
-    line-height: 0;
+    justify-content: center;
+    gap: 0.5rem;
+    line-height: 1;
     background-color: #cff80b;
-    padding: 1rem;
-    font-size: 1.2rem;
+    padding: 0.8rem 0.75rem;
+    font-size: 1rem;
     font-weight: 700;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.HeroSection_box_btn{
+.HeroSection_box_message {
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    color: #cff80b;
+    min-height: 1.5rem;
+}
+
+.HeroSection_box_btn {
     background-color: #cff80b;
     border: 0;
     outline: 0;
@@ -73,16 +89,42 @@
     padding: 1rem;
     border-radius: 2rem;
     font-size: 1.2rem;
+    cursor: pointer;
+    font-weight: 700;
 }
 
-@media only screen and (max-width:35em){
-    .HeroSection{
+/* ---- TABLET (≤ 768px) ---- */
+@media only screen and (max-width: 48em) {
+    .HeroSection {
         width: 95%;
     }
-    .HeroSection_box{
-        width: 95%;
+
+    .HeroSection_box {
+        width: 100%;
+        margin-top: 2rem;
     }
-    .HeroSection_box_input input{
-        width: 50%;
+}
+
+/* ---- MOBILE (≤ 560px) ---- */
+@media only screen and (max-width: 35em) {
+    .HeroSection {
+        width: 100%;
+        padding: 0 0.75rem;
+    }
+
+    .HeroSection_box {
+        width: 100%;
+        border-radius: 1.2rem;
+        padding: 1rem 0.85rem;
+    }
+
+    .HeroSection_box_input button {
+        font-size: 0.85rem;
+        padding: 0.7rem 0.55rem;
+    }
+
+    .HeroSection_box_btn {
+        font-size: 1rem;
+        padding: 0.85rem;
     }
 }

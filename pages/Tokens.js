@@ -12,7 +12,7 @@ const Tokens = () => {
 
   // 1. Debounce Logic: Updates 'debouncedSearch' 500ms after user stops typing
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchItem), 500);
+    const timer = setTimeout(() => setDebouncedSearch(searchItem), 100);
     return () => clearTimeout(timer);
   }, [searchItem]);
 

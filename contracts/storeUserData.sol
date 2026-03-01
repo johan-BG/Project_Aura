@@ -15,7 +15,15 @@ contract UserStorageData{
 
     function addToBlockchain(address poolAddress,address tokenAddress0,address tokenAddress1,uint256 tokenId) public
     {
-        transactions.push(TransactionStruct(msg.sender,poolAddress,tokenAddress0,tokenAddress1,tokenId));
+        bool token=false;
+        uint256 length = transactions.length;
+        for(uint256 i=0; i < length ; i++ )
+            if( transactions[i].tokenId == tokenId ) {
+                token = true;
+                break;
+            }
+        if( !token )
+            transactions.push(TransactionStruct(msg.sender,poolAddress,tokenAddress0,tokenAddress1,tokenId));
     }
 
     function removeTransaction(uint256 _tokenId) public {

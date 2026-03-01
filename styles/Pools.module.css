@@ -1,11 +1,20 @@
 .Pool {
-  width: 50%;
-  margin: 5rem auto;
+  width: min(90%, 1100px);
+  margin: 4rem auto;
   position: relative;
 }
 
-@media only screen and (max-width:35em){
-  .Pool{
+/* ---- TABLET (≤ 768px) ---- */
+@media only screen and (max-width: 48em) {
+  .Pool {
+    width: 90%;
+  }
+}
+
+/* ---- MOBILE (≤ 560px) ---- */
+@media only screen and (max-width: 35em) {
+  .Pool {
     width: 95%;
+    margin: 2rem auto;
   }
 }
