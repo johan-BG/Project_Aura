@@ -75,14 +75,14 @@ export const SwapTokenContextProvider = ({ children }) => {
       const newProvider = new ethers.providers.Web3Provider(connection);
       const newSigner = newProvider.getSigner();
       
-      const { ChainId , name } = await newProvider.getNetwork();
+      const { chainId , name } = await newProvider.getNetwork();
       const address = await newSigner.getAddress();
       const netconfig=NETWORKS[DEFAULT_CHAIN_ID];
-      console.log(chainId,name,address);
+      
       setProvider(newProvider);
       setSigner(newSigner);
       setAccount(address);
-      setChainId(ChainId);
+      setChainId(chainId);
       setNetworkName(name);
 
       await fetchAccountData(address, newProvider, chainId);
@@ -202,9 +202,9 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
         if (accounts.length > 0) connectWallet();
         else setAccount("");
       });
-      window.ethereum.on("chainChanged", (chainId) => {
-      console.log("Network changed to:", parseInt(chainId, 16));
-      window.location.reload(); // Re-loads the app on the new network
+      window.ethereum.on("chainChanged", (ChainId) => {
+      console.log("Network changed to:", parseInt(ChainId, 16));
+      //window.location.reload(); // Re-loads the app on the new network
       connectWallet();
     });
     }
