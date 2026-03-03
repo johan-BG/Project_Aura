@@ -190,7 +190,7 @@ const HeroSection = () => {
         {account ? (
           
           <button className={Style.HeroSection_box_btn} onClick={handleSwapExecute}>
-              { loading? "Swap" : "Processing" }
+              { !loading? "Swap" : "Processing" }
           </button>
         ) : (
           <button className={Style.HeroSection_box_btn} onClick={connectWallet}>
