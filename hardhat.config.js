@@ -30,6 +30,13 @@ module.exports = {
       url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       accounts: [`${process.env.ACCOUNT_KEY}`],
       chainId: 11155111,
+    },
+    optimism: {
+      url: `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.ACCOUNT_KEY}`],
+      chainId: 11155420,
+      timeout: 60000,           // 60 seconds
+      requestTimeout: 60000,
     }
   },
 };

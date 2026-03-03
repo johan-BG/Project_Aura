@@ -1,6 +1,7 @@
 // config.js
 import localhost from "./localhost_address.json";
 import sepolia from "./sepolia_address.json";
+import optimism from "./optimism_address.json";
 
 import userStorgeData from "./Context/UserStorageData.json";
 import ERC20 from "./Context/ERC20.json";
@@ -122,6 +123,59 @@ export const NETWORKS = {
         },
         { 
           address:sepolia.weth,
+          name: "Wrapped ETH", 
+          symbol: "WETH", 
+          decimals: 18,
+        }
+      ]
+    }
+  },
+  11155420: {
+    name: "OP Sepolia Testnet",
+    rpc: `https://opt-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+    subgraphUrl: "https://gateway.thegraph.com/api/5f704218070c5797b1928dd757cd63a0/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV",
+    explorer: "https://sepolia.etherscan.io",
+    contracts: {
+      positionManager: optimism.nonfungiblePositionManager,
+      factory: optimism.factory,
+      router: optimism.swaprouter, // Usually deployed locally in your scripts
+      userStorageData: optimism.UserStorageData,
+      quoter:optimism.quoter,
+      singleSwapToken:optimism.SingleSwapToken,
+      tokens: [
+        { 
+          address: optimism.BooCoin, 
+          name: "BooCoin", 
+          symbol: "BOO", 
+          decimals: 18
+        },
+        { 
+          address: optimism.AuraCoin, 
+          name: "AuraCoin", 
+          symbol: "AURA", 
+          decimals: 18,
+          img: "/assets/Aura_coin.png" 
+        },
+        { 
+          address: optimism.popUp,
+          name: "PopUp", 
+          symbol: "POP", 
+          decimals: 18,
+        },
+        { 
+          address: optimism.shoaib,
+          name: "Shoaib", 
+          symbol: "SHO", 
+          decimals: 18,
+        },
+        { 
+          address: optimism.rayyan,
+          name: "Rayyan", 
+          symbol: "RAY", 
+          decimals: 18,
+        },
+        { 
+          address:optimism.weth,
           name: "Wrapped ETH", 
           symbol: "WETH", 
           decimals: 18,
