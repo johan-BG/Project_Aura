@@ -1,5 +1,4 @@
 import { BigNumber } from "ethers";
-import deployments from "../scripts/deploymentdata.json";
 
 const bn = require("bignumber.js");
 bn.config({ EXPONENTIAL_AT: 999999, DECIMAL_PLACES: 40 });

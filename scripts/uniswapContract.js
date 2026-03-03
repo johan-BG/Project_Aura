@@ -1,127 +1,8 @@
-// const { Contract,ContractFactory,utils,BigNumber}  = require("ethers");
-// const WETH9 = require("../Context/WETH9.json");
-// const { NonfungiblePositionManager } = require("@uniswap/v3-sdk");
-// // const { NonfungiblePositionManager, SwapRouter } = require("@uniswap/v3-sdk");
-// // const { ethers, artifacts } = require("hardhat");
-
-// const artifacts = {
-//     UniswapV3Factory:require("@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json"),
-//     SwapRouter:require("@uniswap/v3-periphery/artifacts/contracts/SwapRouter.sol/SwapRouter.json"),
-//     NFTDescriptor:require("@uniswap/v3-periphery/artifacts/contracts/libraries/NFTDescriptor.sol/NFTDescriptor.json"),
-//     NonfungibleTokenPositionDescriptor:require("@uniswap/v3-periphery/artifacts/contracts/NonfungibleTokenPositionDescriptor.sol/NonfungibleTokenPositionDescriptor.json"),
-//     NonfungiblePositionManager:require("@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json"),
-//     WETH9,
-// };
-
-// const linkLibraries = ({bytecode,linkReferences},libraries)=>{
-//     Object.keys(linkReferences).forEach((fileName)=>{
-//         Object.keys(linkReferences[fileName]).forEach((contractName)=>{
-//         if(!libraries.hasOwnProperty(contractName)){
-//             throw new Error(`Missing link library name ${contractName}`);
-//         }
-//         const address = utils.getAddress(libraries[contractName]).toLowerCase().slice(2);
-//         linkReferences[fileName][contractName].forEach(({start,length})=>{
-//             const start2 = 2 + start *2;
-//             const length2 = length*2;
-
-//             bytecode = bytecode.slice(0,start2).concat(address).concat(bytecode.slice(start2+length2,bytecode.length));
-//         });
-//     });
-// });
-// return bytecode;
-// };
-
-// async function main(){
-//     const [owner] = await ethers.getSigners();
-
-//     Weth = new ContractFactory(
-//         artifacts.WETH9.abi,
-//         artifacts.WETH9.bytecode,
-//         owner
-//     );
-//      weth = await Weth.deploy();
-
-//      Factory = new ContractFactory(
-//         artifacts.UniswapV3Factory.abi,
-//         artifacts.UniswapV3Factory.bytecode,
-//         owner
-//      );
-//      factory = await Factory.deploy();
-
-//      SwapRouter = new ContractFactory(
-//         artifacts.SwapRouter.abi,
-//         artifacts.SwapRouter.bytecode,
-//         owner
-//      );
-//      swaprouter = await SwapRouter.deploy(factory.address,weth.address);
-
-//      NFTDescriptor = new ContractFactory(
-//         artifacts.NFTDescriptor.abi,
-//         artifacts.NFTDescriptor.bytecode,
-//         owner
-//      );
-//      nftDescriptor = await NFTDescriptor.deploy();
-
-//      const linkedBytecode = linkLibraries(
-//         {
-//             bytecode:artifacts.NonfungibleTokenPositionDescriptor.bytecode,
-//             linkReferences:{
-//                 "contracts/libraries/NFTDescriptor.sol:NFTDescriptor":{
-//                 NFTDescriptor:[
-//                     {
-//                         length:20,
-//                         start:1261.
-//                     },
-//                 ],
-//             },
-//         },
-//     },
-//     {
-//         NFTDescriptor:nftDescriptor.address,
-//     }
-//      );
-//      console.log(linkedBytecode.includes("__$"));
-
-//      NonfungibleTokenPositionDescriptor =new ContractFactory(
-//         artifacts.NonfungibleTokenPositionDescriptor.abi,
-//         linkedBytecode,
-//         owner,
-//      );
-
-//      nonfungibleTokenPositionDescriptor  =await NonfungibleTokenPositionDescriptor.deploy(weth.address);
-
-//      console.log(nonfungibleTokenPositionDescriptor);
-
-//      NonfungiblePositionManager = new ContractFactory(
-//         artifacts.NonfungiblePositionManager.abi,
-//         artifacts.NonfungiblePositionManager.bytecode,
-//         owner
-//      );
-//      nonfungiblePositionManager = await NonfungiblePositionManager.deploy(
-//         factory.address,
-//         weth.address,
-//         nonfungibleTokenPositionDescriptor.address
-//      );
-
-//      console.log("weth address",`${weth.address}`);
-//      console.log("Factory address",`${factory.address}`);
-//      console.log("SwapRouter address",`${swaprouter.address}`);
-//      console.log("nftDescriptor address",`${nftDescriptor.address}`);
-//      console.log("positionManager address",`${nonfungiblePositionManager.address}`);
-//      console.log("positionDescriptor address",`${nonfungibleTokenPositionDescriptor.address}`);
-// }
-
-// main()
-// .then(()=>process.exit(0))
-// .catch((error)=>{
-//     console.error(error);
-//     process.exit(1);
-// });
-
 const { Contract, ContractFactory, utils } = require("ethers");
 const WETH9 = require("../Context/WETH9.json");
 const { ethers } = require("hardhat"); // Assuming you are running this via hardhat
 const fs = require("fs");
+const path = require("path");
 
 // Import artifacts
 const artifacts = {
@@ -244,17 +125,6 @@ async function main() {
     owner,
   );
 
-  // Note: The PositionDescriptor takes the native currency wrapper (WETH) or specific token as bytes32,
-  // but the standard Uniswap constructor usually takes a specialized WETH address or byte32 equivalent.
-  // Standard V3 Periphery Constructor: constructor(address _WETH9, bytes32 _nativeCurrencyLabelBytes)
-  // However, usually it is just `constructor(address _WETH9)` for the descriptor depending on the version.
-  // Based on your code, you passed `weth.address`.
-  // const nonfungibleTokenPositionDescriptor = await NonfungibleTokenPositionDescriptor.deploy(
-  //     weth.address,
-  //     // If your artifact requires a second argument (bytes32 nativeCurrencyLabelBytes), uncomment below:
-  //     // utils.formatBytes32String("ETH")
-  // );
-
   const nativeCurrencyLabelBytes = utils.formatBytes32String("ETH");
 
   const nonfungibleTokenPositionDescriptor =
@@ -279,11 +149,11 @@ async function main() {
   await nonfungiblePositionManager.deployed();
 
   console.log("----------------------------------------------");
-  console.log("WETH Address:", weth.address);
-  console.log("Factory Address:", factory.address);
-  console.log("Quoter Address:", quoterv2.address);
-  console.log("SwapRouter Address:", swaprouter.address);
-  console.log("NFTDescriptor Address:", nftDescriptor.address);
+  console.log("WETH:", weth.address);
+  console.log("Factory:", factory.address);
+  console.log("Quoter:", quoterv2.address);
+  console.log("SwapRouter:", swaprouter.address);
+  console.log("NFTDescriptor:", nftDescriptor.address);
   console.log(
     "PositionDescriptor Address:",
     nonfungibleTokenPositionDescriptor.address,
@@ -291,7 +161,7 @@ async function main() {
   console.log("PositionManager Address:", nonfungiblePositionManager.address);
   console.log("----------------------------------------------");
 
-  const deploymentdata = {};
+  const deploymentdata=JSON.parse(fs.readFileSync(path.join(__dirname,"../address.json"), "utf8"));
   deploymentdata.weth = weth.address;
   deploymentdata.factory = factory.address;
   deploymentdata.quoter = quoterv2.address;
@@ -302,7 +172,7 @@ async function main() {
   deploymentdata.nonfungiblePositionManager =
     nonfungiblePositionManager.address;
   fs.writeFileSync(
-    "scripts/deploymentdata.json",
+    path.join(__dirname,"../address.json"),
     JSON.stringify(deploymentdata, null, 2),
   );
 }

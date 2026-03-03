@@ -76,7 +76,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     );
 
     // 4. Calculate Position (using Mint Amounts)
-    const ticks = getTickRange(slot0.tick, tickSpacing,true); // True for Full Range
+    const ticks = getTickRange(slot0.tick, tickSpacing); // True for Full Range
     
     let existingTokenId = null;
     const balance = await contracts.manager.balanceOf(account);

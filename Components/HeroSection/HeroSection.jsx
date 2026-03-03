@@ -11,7 +11,7 @@ const HeroSection = () => {
   const [openSetting, setOpenSetting] = useState(false);
   const [openToken, setOpenToken] = useState(false);
   const [openTokenTwo, setOpenTokenTwo] = useState(false);
-  
+  const [loading,setLoading] = useState(false);
   const [search, setSearch] = useState(false);
   const [swapAmount, setSwapAmount] = useState("");
   const [tokenSwapOutPut, setTokenSwapOutPut] = useState("");
@@ -44,7 +44,10 @@ const HeroSection = () => {
       setSearch(false);
       return;
     }
-
+    if( tokenOne.tokenAddress=="" || tokenTwo.tokenAddress=="" ) {
+      setPoolMessage("Please provide token details");
+      return;
+    }
     setSearch(true);
     try {
       // Pass the current direction directly to avoid React stale state issues
@@ -60,12 +63,12 @@ const HeroSection = () => {
         if (isOutputDirection) {
           const amountOut=ethers.utils.formatUnits(data,tokenTwo.decimals);
           setTokenSwapOutPut(amountOut);
-          setPoolMessage(`${value} ${tokenOne.symbol} = ${amountOut} ${tokenTwo.symbol}`);
+          setPoolMessage(`${value} ${tokenOne.symbol} = ${amountOut.slice(0,7)} ${tokenTwo.symbol}`);
         } else {
           // If user types in the bottom box, we estimate the top box input required
           //setSwapAmount(data); 
           const amountIn=ethers.utils.formatUnits(data,tokenOne.decimals)
-          setPoolMessage(`Requires ~${amountIn} ${tokenOne.symbol} for ${value} ${tokenTwo.symbol}`);
+          setPoolMessage(`Requires ~${amountIn.slice(0,7)} ${tokenOne.symbol} for ${value} ${tokenTwo.symbol}`);
         }
       }
     } catch (error) {
@@ -91,10 +94,10 @@ const HeroSection = () => {
     fetchPrice(val, false);
   };
 
-  const handleSwapExecute = () => {
+  const handleSwapExecute = async() => {
     if (!singleSwap) return console.error("Swap function missing from Context");
-    
-    singleSwap(
+    setLoading(true);
+    await singleSwap(
       isOut,
       tokenOne,
       tokenTwo,
@@ -102,6 +105,16 @@ const HeroSection = () => {
       tokenSwapOutPut,
       3000
     );
+    setSwapAmount("");
+    setTokenSwapOutPut(0);
+    setPoolMessage("");
+    setTokenOne({
+    name: "", image: "", symbol: "", tokenBalance: "", tokenAddress: "",decimals: ""
+    });
+    setTokenTwo({
+    name: "", image: "", symbol: "", tokenBalance: "", tokenAddress: "",decimals: ""
+    });
+    setLoading(false);
   };
 
   return (
@@ -175,8 +188,9 @@ const HeroSection = () => {
 
         {/* ACTION BUTTON */}
         {account ? (
+          
           <button className={Style.HeroSection_box_btn} onClick={handleSwapExecute}>
-            Swap
+              { loading? "Swap" : "Processing" }
           </button>
         ) : (
           <button className={Style.HeroSection_box_btn} onClick={connectWallet}>

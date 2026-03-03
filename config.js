@@ -1,7 +1,7 @@
 // config.js
-import deploymentdata from "./scripts/deploymentdata.json";
-import tokendata from "./scripts/tokendata.json";
-import addresses from "./Context/address.json";
+import localhost from "./localhost_address.json";
+import sepolia from "./sepolia_address.json";
+
 import userStorgeData from "./Context/UserStorageData.json";
 import ERC20 from "./Context/ERC20.json";
 import pool from "@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json";
@@ -28,46 +28,46 @@ export const NETWORKS = {
     subgraphUrl: "https://gateway.thegraph.com/api/5f704218070c5797b1928dd757cd63a0/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV",
     explorer: "", // No explorer for local
     contracts: {
-      positionManager: deploymentdata.nonfungiblePositionManager,
-      factory: deploymentdata.factory,
-      router: deploymentdata.swaprouter, // Usually deployed locally in your scripts
-      userStorageData: addresses.contracts.UserStorageData,
-      quoter:deploymentdata.quoter,
-      singleSwapToken:addresses.contracts.SingleSwapToken,
+      positionManager: localhost.nonfungiblePositionManager,
+      factory: localhost.factory,
+      router: localhost.swaprouter, // Usually deployed locally in your scripts
+      userStorageData: localhost.UserStorageData,
+      quoter:localhost.quoter,
+      singleSwapToken:localhost.SingleSwapToken,
       tokens: [
         { 
-          address: addresses.contracts.BooCoin, 
+          address: localhost.BooCoin, 
           name: "BooCoin", 
           symbol: "BOO", 
           decimals: 18
         },
         { 
-          address: addresses.contracts.AuraCoin, 
+          address: localhost.AuraCoin, 
           name: "AuraCoin", 
           symbol: "AURA", 
           decimals: 18,
           img: "/assets/Aura_coin.png" 
         },
         { 
-          address: tokendata.popUp,
+          address: localhost.popUp,
           name: "PopUp", 
           symbol: "POP", 
           decimals: 18,
         },
         { 
-          address: tokendata.shoaib,
+          address: localhost.shoaib,
           name: "Shoaib", 
           symbol: "SHO", 
           decimals: 18,
         },
         { 
-          address: tokendata.rayyan,
+          address: localhost.rayyan,
           name: "Rayyan", 
           symbol: "RAY", 
           decimals: 18,
         },
         { 
-          address: deploymentdata.weth,
+          address:localhost.weth,
           name: "Wrapped ETH", 
           symbol: "WETH", 
           decimals: 18,
@@ -79,14 +79,53 @@ export const NETWORKS = {
   11155111: {
     name: "Sepolia Testnet",
     rpc: `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
+    subgraphUrl: "https://gateway.thegraph.com/api/5f704218070c5797b1928dd757cd63a0/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV",
     explorer: "https://sepolia.etherscan.io",
     contracts: {
-      positionManager: "0x123...", // Your deployed Sepolia Address
-      factory: "0x456...",
-      router: "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+      positionManager: sepolia.nonfungiblePositionManager,
+      factory: sepolia.factory,
+      router: sepolia.swaprouter, // Usually deployed locally in your scripts
+      userStorageData: sepolia.UserStorageData,
+      quoter:sepolia.quoter,
+      singleSwapToken:sepolia.SingleSwapToken,
       tokens: [
-        { address: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238", name: "USDC", symbol: "USDC", decimals: 6 },
-        { address: "0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6", name: "DAI", symbol: "DAI", decimals: 18 }
+        { 
+          address: sepolia.BooCoin, 
+          name: "BooCoin", 
+          symbol: "BOO", 
+          decimals: 18
+        },
+        { 
+          address: sepolia.AuraCoin, 
+          name: "AuraCoin", 
+          symbol: "AURA", 
+          decimals: 18,
+          img: "/assets/Aura_coin.png" 
+        },
+        { 
+          address: sepolia.popUp,
+          name: "PopUp", 
+          symbol: "POP", 
+          decimals: 18,
+        },
+        { 
+          address: sepolia.shoaib,
+          name: "Shoaib", 
+          symbol: "SHO", 
+          decimals: 18,
+        },
+        { 
+          address: sepolia.rayyan,
+          name: "Rayyan", 
+          symbol: "RAY", 
+          decimals: 18,
+        },
+        { 
+          address:sepolia.weth,
+          name: "Wrapped ETH", 
+          symbol: "WETH", 
+          decimals: 18,
+        }
       ]
     }
   }
