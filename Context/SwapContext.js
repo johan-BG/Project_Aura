@@ -5,7 +5,7 @@ import { NETWORKS, DEFAULT_CHAIN_ID, ARTIFACTS ,TOKEN_RESULTS} from "../config";
 const axios =require("axios");
 import { getLogoUrl } from "../Utils/tokenHelper";
 import { getQuoteExactInput,getQuoteExactOutput } from "../Utils/swapUpdatePrice";
-
+import { saveSession, getSession }  from "../Utils/sessionControl";
 
 const TOP_TOKENS_QUERY = `
 {
@@ -78,6 +78,7 @@ export const SwapTokenContextProvider = ({ children }) => {
       const { chainId , name } = await newProvider.getNetwork();
       const address = await newSigner.getAddress();
       const netconfig=NETWORKS[DEFAULT_CHAIN_ID];
+      saveSession(address,chainId);
       
       setProvider(newProvider);
       setSigner(newSigner);
@@ -176,7 +177,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
             },
           );
         }
-        await fetchAccountData();
+        fetchAccountData();
       }
       catch(e)
       {
@@ -204,8 +205,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       });
       window.ethereum.on("chainChanged", (ChainId) => {
       console.log("Network changed to:", parseInt(ChainId, 16));
-      //window.location.reload(); // Re-loads the app on the new network
-      connectWallet();
+      window.location.reload(); 
     });
     }
   }, []);
@@ -216,6 +216,17 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       fetchTopTokens();
     }
   }, [chainId, fetchTopTokens]);
+
+  useEffect(() => {
+    const session = getSession();
+    
+    if (session && session.address && session.chainId ) {
+      console.log("Restoring session for:", session.address);
+      setAccount(session.address);
+      setChainId(session.chainId);
+      connectWallet();
+    }
+  }, []);
 
   // --- 6. CONTEXT VALUE ---
   const value = {

@@ -144,7 +144,7 @@ const HeroSection = () => {
         {/* INPUT 2 (EXACT OUTPUT) */}
         <div className={Style.HeroSection_box_input}>
           <div className={Style.inputWrapper}>
-            {search && !isOut ? (
+            {search && isOut ? (
               <Image src={images.loading} width={80} height={30} alt="loading" className={Style.loader} />
             ) : (
               <input

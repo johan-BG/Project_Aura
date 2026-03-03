@@ -114,8 +114,8 @@ export const LiquidityProvider = ({ children }) => {
             );
 
             // Refresh the list after saving
-            await fetchUserPositions();
-            await refreshData();
+            fetchUserPositions();
+            refreshData();
             console.log("refreshed");
         } catch (error) {
             console.error("Operation failed:", error);
@@ -129,8 +129,8 @@ export const LiquidityProvider = ({ children }) => {
             setIsLoading(true);
             const receipt= await removeLiquidity(tokenId,contracts,account);
             await contracts.userStorage.removeTransaction(tokenId);
-            await fetchUserPositions();
-            await refreshData();
+            fetchUserPositions();
+            refreshData();
         }
         catch(e)
         {
@@ -141,11 +141,9 @@ export const LiquidityProvider = ({ children }) => {
         }
     };
 
-
-
     useEffect(() => {
           fetchUserPositions();
-      }, [account,chainId,fetchUserPositions]);
+      }, [account,activeConfig,fetchUserPositions]);
 
     return (
         <LiquidityContext.Provider value={{ 

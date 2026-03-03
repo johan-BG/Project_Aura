@@ -295,7 +295,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
 
             <div className={Style.PoolAdd_box_price_right_box}>
               <p className={Style.PoolAdd_box_price_right_box_para}>
-                Current Price: 41.1494 {tokenOne.name || "ETH"} per{" "}
+                Current Price: { tokenAmountOne && tokenAmountTwo ? tokenAmountTwo/tokenAmountOne : 0} {tokenOne.name || "ETH"} per{" "}
                 {tokenTwo.name || "Select"}
               </p>
               <Image src={images.wallet} alt="wallet" height={80} width={80} />
