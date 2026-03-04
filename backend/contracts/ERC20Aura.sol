@@ -33,5 +33,7 @@ contract AuraCoin is ERC20 {
         require(recoveredSigner == signerAddress, "Invalid Signature");
 
         _transfer(address(this), msg.sender, amount);
+
+        emit BonusDistributed(msg.sender, amount); 
     }
 }

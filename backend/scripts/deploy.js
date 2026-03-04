@@ -1,6 +1,7 @@
 const hre = require("hardhat");
 const fs = require("fs");
 const path = require("path");
+const { json } = require("stream/consumers");
 
 async function main() {
     const network = hre.network.name;
@@ -59,6 +60,11 @@ async function main() {
     fs.writeFileSync(
         addressesPath,
         JSON.stringify(deploymentData, null, 2)
+    );
+
+    fs.writeFileSync(
+        path.join(__dirname, "../server/utils/contract.json"),
+        JSON.stringify(deploymentData.AuraCoin,null,0)
     );
     
     console.log(`\n📝 Deployment data saved to ${addressesPath}`);
