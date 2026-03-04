@@ -64,6 +64,31 @@
     gap: 0.75rem;
 }
 
+.NavBar_box_right_profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+
+.NavBar_profile_icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid #cff80b; /* Accent border */
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.NavBar_profile_icon:hover {
+    transform: scale(1.05);
+}
+
 .NavBar_box_right_box {
     display: flex;
     align-items: center;

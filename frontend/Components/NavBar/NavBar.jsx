@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Style from "./NavBar.module.css";
 import images from "../../assets/index";
-import { Model, TokenList } from "../index";
+import { Model, TokenList, Profile } from "../index";
+import Identicon from 'react-identicons';
 import { useSwapContext } from "../../Context/SwapContext";
 
 const NavBar = () => {
@@ -16,6 +17,7 @@ const NavBar = () => {
   const [openModel, setOpenModel] = useState(false);
   const [openTokenBox, setOpenTokenBox] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
 
   return (
     <div className={Style.NavBar}>
@@ -54,9 +56,18 @@ const NavBar = () => {
           </div>
 
           {account ? (
-            <button onClick={() => setOpenTokenBox(true)}>
-              {account.slice(0, 14)}…
-            </button>
+            <div className={Style.NavBar_box_right_profile}>
+              <button onClick={() => setOpenTokenBox(true)}>
+                {account.slice(0, 14)}…
+              </button>
+              <div 
+                className={Style.NavBar_profile_icon} 
+                onClick={() => setOpenProfile(prev => !prev)}
+              >
+                <Identicon string={account} size={25} bg="#fff" />
+              </div>
+              {openProfile && <Profile account={account} />}
+            </div>
           ) : (
             <button onClick={() => setOpenModel(true)}>Connect</button>
           )}
