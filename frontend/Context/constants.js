@@ -3,7 +3,7 @@ import auraCoin from "./AuraCoin.json";
 import singleSwapToken from "./SingleSwapToken.json";
 import swapMultiHop from "./SwapMultiHop.json";
 import IWETH from "./IWETH.json";
-import addresses from "./address.json";
+import addresses from "../localhost_address.json";
 
 // Token addresses
 export const DAIAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
