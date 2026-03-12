@@ -6,6 +6,7 @@ const axios =require("axios");
 import { getLogoUrl } from "../Utils/tokenHelper";
 import { getQuoteExactInput,getQuoteExactOutput } from "../Utils/swapUpdatePrice";
 import { saveSession, getSession }  from "../Utils/sessionControl";
+import { UserStorageDataAddress, UserStorageDataABI, AuraCoinAddress, AuraCoinABI } from "./constants";
 
 const TOP_TOKENS_QUERY = `
 {
@@ -30,7 +31,11 @@ export const SwapTokenContextProvider = ({ children }) => {
   const [tokenData, setTokenData] = useState([]);
   const [isConnecting, setIsConnecting] = useState(false);
   const [topTokens,setTopTokens]=useState([]);
-  const [contracts, setContracts] = useState({ router: null, quoter: null ,singleSwapToken: null});
+  const [contracts, setContracts] = useState({ router: null, quoter: null ,singleSwapToken: null, auraCoin: null, userStorageData: null});
+  const [hasClaimed, setHasClaimed] = useState(false);
+  const [allTransactions, setAllTransactions] = useState([]);
+  const [swapCount, setSwapCount] = useState(0);
+  const [poolCount, setPoolCount] = useState(0);
   // --- HELPER: Get Active Network Config ---
   const activeConfig = useMemo(() => {
   return NETWORKS[chainId] || NETWORKS[DEFAULT_CHAIN_ID];
@@ -61,6 +66,27 @@ export const SwapTokenContextProvider = ({ children }) => {
       }));
 
       setTokenData(tokens.filter(Boolean));
+
+      // Fetch specific app data explicitly avoiding activeConfig checks
+      try {
+          const storageContract = new ethers.Contract(UserStorageDataAddress, UserStorageDataABI, currentProvider);
+          const txs = await storageContract.getAllTransactions(userAddr);
+          console.log("RAW_TX_DATA:", txs);
+          // Swaps are logged using Date.now() (timestamps > 1000000000000). LP Positions use basic sequential IDs (1, 2, 3...)
+          const swaps = txs.filter(tx => Number(tx.tokenId.toString()) >= 1000000000000 || tx.tokenId.toString() === "0");
+          const pools = txs.filter(tx => Number(tx.tokenId.toString()) < 1000000000000 && tx.tokenId.toString() !== "0");
+          setAllTransactions(txs);
+          setSwapCount(swaps.length);
+          setPoolCount(pools.length);
+
+          const auraContract = new ethers.Contract(AuraCoinAddress, AuraCoinABI, currentProvider);
+          const filter = auraContract.filters.BonusDistributed(userAddr);
+          const logs = await auraContract.queryFilter(filter);
+          setHasClaimed(logs.length > 0);
+      } catch (err) {
+          console.error("Error verifying storage or aura events:", err);
+      }
+
     } catch (error) {
       console.error("Error loading account data:", error);
     }
@@ -167,6 +193,15 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
             gasLimit: 1000000,
           },
         );
+        await tarnsaction.wait();
+        try {
+            const swapId = Date.now();
+            const storageContract = new ethers.Contract(UserStorageDataAddress, UserStorageDataABI, signer);
+            const logTx = await storageContract.addToBlockchain(activeConfig.contracts.router, tokenIn.tokenAddress, tokenOut.tokenAddress, swapId); 
+            await logTx.wait();
+        } catch (err) {
+            console.error("Error logging swap to UserStorageData:", err);
+        }
         }
         else{
           const tarnsaction = await contracts.singleSwapToken.swapExactOutputSingle(
@@ -179,8 +214,17 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
             gasLimit: 1000000,
             },
           );
+          await tarnsaction.wait();
+          try {
+              const swapId = Date.now();
+              const storageContract = new ethers.Contract(UserStorageDataAddress, UserStorageDataABI, signer);
+              const logTx = await storageContract.addToBlockchain(activeConfig.contracts.router, tokenIn.tokenAddress, tokenOut.tokenAddress, swapId); 
+              await logTx.wait();
+          } catch (err) {
+              console.error("Error logging swap to UserStorageData:", err);
+          }
         }
-        fetchAccountData();
+        fetchAccountData(account, provider, chainId);
       }
       catch(e)
       {
@@ -195,7 +239,9 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     setContracts({
       //router: new ethers.Contract(activeConfig.contracts.router, ARTIFACTS.router, target),
       quoter: new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, target), // Preloaded
-      singleSwapToken:new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target)
+      singleSwapToken:new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target),
+      auraCoin: activeConfig?.contracts?.auraCoin ? new ethers.Contract(activeConfig.contracts.auraCoin, ARTIFACTS.ERC20, target) : null,
+      userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null
     });
   }, [signer, provider, activeConfig]);
 
@@ -242,6 +288,11 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     activeConfig,
     isConnecting,
     topTokens,
+    hasClaimed,
+    setHasClaimed,
+    allTransactions,
+    swapCount,
+    poolCount,
     getSwapQuote,
     connectWallet,
     singleSwap,

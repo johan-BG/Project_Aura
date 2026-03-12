@@ -32,6 +32,9 @@ ABI = [
     }
 ]
 
+# contract = w3.eth.contract(address=CONTRACT_ADDR, abi=ABI)
+# Access the 'address' key specifically
+# contract = w3.eth.contract(address=CONTRACT_ADDR['address'], abi=ABI)
 contract = w3.eth.contract(address=CONTRACT_ADDR, abi=ABI)
 
 def has_already_claimed_on_chain(user_address):

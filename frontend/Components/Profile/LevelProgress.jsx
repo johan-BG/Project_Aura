@@ -3,6 +3,55 @@ import { motion } from 'framer-motion';
 import Style from './LevelProgress.module.css';
 
 // We will use inline SVGs as placeholders for Medals since assets don't exist yet
+const FMedal = () => (
+    <svg viewBox="0 0 100 100" width="50" height="50">
+        <circle cx="50" cy="50" r="45" fill="#ff4d4d" stroke="#cc0000" strokeWidth="5"/>
+        <text x="50" y="60" fontSize="30" textAnchor="middle" fill="#fff" fontWeight="bold">F</text>
+    </svg>
+);
+
+const DMedal = () => (
+    <svg viewBox="0 0 100 100" width="50" height="50">
+        <circle cx="50" cy="50" r="45" fill="#ff9933" stroke="#cc6600" strokeWidth="5"/>
+        <text x="50" y="60" fontSize="30" textAnchor="middle" fill="#fff" fontWeight="bold">D</text>
+    </svg>
+);
+
+const CMedal = () => (
+    <svg viewBox="0 0 100 100" width="50" height="50">
+        <circle cx="50" cy="50" r="45" fill="#ffcc00" stroke="#cc9900" strokeWidth="5"/>
+        <text x="50" y="60" fontSize="30" textAnchor="middle" fill="#fff" fontWeight="bold">C</text>
+    </svg>
+);
+
+const BMedal = () => (
+    <svg viewBox="0 0 100 100" width="50" height="50">
+        <circle cx="50" cy="50" r="45" fill="#33cc33" stroke="#009900" strokeWidth="5"/>
+        <text x="50" y="60" fontSize="30" textAnchor="middle" fill="#fff" fontWeight="bold">B</text>
+    </svg>
+);
+
+const AMedal = () => (
+    <svg viewBox="0 0 100 100" width="50" height="50">
+        <circle cx="50" cy="50" r="45" fill="#3399ff" stroke="#0066cc" strokeWidth="5"/>
+        <text x="50" y="60" fontSize="30" textAnchor="middle" fill="#fff" fontWeight="bold">A</text>
+    </svg>
+);
+
+const SMedal = () => (
+    <svg viewBox="0 0 100 100" width="50" height="50">
+        <circle cx="50" cy="50" r="45" fill="#9933ff" stroke="#6600cc" strokeWidth="5"/>
+        <text x="50" y="60" fontSize="30" textAnchor="middle" fill="#fff" fontWeight="bold">S</text>
+    </svg>
+);
+
+const PlatinumMedal = () => (
+    <svg viewBox="0 0 100 100" width="50" height="50">
+        <circle cx="50" cy="50" r="45" fill="#e5e4e2" stroke="#b0b0b0" strokeWidth="5"/>
+        <text x="50" y="60" fontSize="30" textAnchor="middle" fill="#fff" fontWeight="bold">P</text>
+    </svg>
+);
+
 const BronzeMedal = () => (
     <svg viewBox="0 0 100 100" width="50" height="50">
         <circle cx="50" cy="50" r="45" fill="#cd7f32" stroke="#a0522d" strokeWidth="5"/>
@@ -47,10 +96,17 @@ const LevelProgress = ({ title, tier = "Bronze", percentage, badgeText, size = 1
 
   const renderMedal = () => {
     switch(tier) {
+      case "F": return <FMedal />;
+      case "D": return <DMedal />;
+      case "C": return <CMedal />;
+      case "B": return <BMedal />;
+      case "A": return <AMedal />;
+      case "S": return <SMedal />;
       case "Bronze": return <BronzeMedal />;
       case "Silver": return <SilverMedal />;
       case "Gold": return <GoldMedal />;
-      case "Diamond":
+      case "Platinum": return <PlatinumMedal />;
+      case "Diamond": return <DiamondMedal />;
       default: return <DiamondMedal />;
     }
   };
