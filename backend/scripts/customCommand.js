@@ -21,8 +21,8 @@ const runCommand = (cmd) => {
 };
 
 // Define your sequence of scripts
-runCommand(`npx hardhat run scripts/deploy.js --network ${network}`);
 runCommand(`npx hardhat run scripts/uniswapContract.js --network ${network}`);
+runCommand(`npx hardhat run scripts/deploy.js --network ${network}`);
 runCommand(`npx hardhat run scripts/deployToken.js --network ${network}`);
 runCommand(`node scripts/copyABI.js`);
 

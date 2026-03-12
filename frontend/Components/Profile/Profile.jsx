@@ -9,7 +9,7 @@ import { claimBonus } from '../../Utils/claimBonus';
 import { AuraCoinAddress, AuraCoinABI } from '../../Context/constants';
 
 const Profile = ({ account }) => {
-  const { provider, signer } = useSwapContext();
+  const { refreshData,provider, signer } = useSwapContext();
   
   const [investmentTier] = useState("Bronze");
   const [investmentProgress] = useState(79);
@@ -27,35 +27,10 @@ const Profile = ({ account }) => {
     
     setIsLoading(true);
     try {
-      // Connect to AuraCoin to execute the signature claim
+      
       const contract = new ethers.Contract(AuraCoinAddress, AuraCoinABI, signer);
-      
-      // claimBonus expects (userAddress, contract)
-      // Since it doesn't return a bool natively but alerts on the .ok failure, 
-      // we can await it and assume if it doesn't throw, it may have succeeded.
-      // Modifying it slightly to ensure state only updates on true success:
-      const response = await fetch("http://localhost:5000/get-signature", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ address: account })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-          alert(data.error); 
-          setIsLoading(false);
-          // If the error means they already claimed it, we could hide the button
-          if (data.error.toLowerCase().includes("already claimed")) {
-             setIsClaimed(true);
-          }
-          return;
-      }
-
-      const { amount, signature } = data;
-      const tx = await contract.claimWithSignature(amount, signature);
-      await tx.wait(); // Wait for confirmation
-      
+      claimBonus(account,contract);
+      refreshData();
       console.log("Bonus Claimed successfully!");
       setIsClaimed(true);
 

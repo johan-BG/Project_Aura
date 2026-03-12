@@ -146,16 +146,19 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
 
     const singleSwap= async(isExactOputput,tokenIn,tokenOut,amountIn,amountOut,fee) => {
       try{
-        
+        console.log(tokenIn.tokenAddress);
         const swapIn=ethers.utils.parseUnits(amountIn.toString(),tokenIn.decimals);
         const swapOut=ethers.utils.parseUnits(amountOut.toString(),tokenOut.decimals);
         const contract=new ethers.Contract(tokenIn.tokenAddress,ARTIFACTS.ERC20, signer || provider);
+        const aura = new ethers.Contract(activeConfig.contracts.aura,ARTIFACTS.ERC20,signer || provider);
+        const sfee=await contracts.singleSwapToken.estimateScarcityFee(tokenIn.tokenAddress,tokenOut.tokenAddress,fee);
+        console.log(sfee.toString());
+        await aura.approve(activeConfig.contracts.singleSwapToken,sfee);
         await contract.approve(activeConfig.contracts.singleSwapToken,swapIn);
 
         if(isExactOputput)
         {
-          const tarnsaction = await contracts.singleSwapToken.swapExactInputSingle(
-          activeConfig.contracts.router,
+          const tarnsaction = await contracts.singleSwapToken.executeSwap(
           tokenIn.tokenAddress,
           tokenOut.tokenAddress,
           swapIn,
@@ -167,7 +170,6 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
         }
         else{
           const tarnsaction = await contracts.singleSwapToken.swapExactOutputSingle(
-            activeConfig.contracts.router,
             tokenIn.tokenAddress,
             tokenOut.tokenAddress,
             swapOut,

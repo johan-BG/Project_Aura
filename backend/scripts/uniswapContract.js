@@ -161,7 +161,7 @@ async function main() {
   console.log("PositionManager Address:", nonfungiblePositionManager.address);
   console.log("----------------------------------------------");
 
-  const deploymentdata=JSON.parse(fs.readFileSync(path.join(__dirname,"../../frontend/address.json"), "utf8"));
+  const deploymentdata={};
   deploymentdata.weth = weth.address;
   deploymentdata.factory = factory.address;
   deploymentdata.quoter = quoterv2.address;

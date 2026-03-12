@@ -11,7 +11,7 @@ async function main() {
     console.log(`Deployer address: ${deployer.address}`);
     console.log(`Deployer balance: ${hre.ethers.utils.formatEther(await deployer.getBalance())} ETH\n`);
 
-    const deploymentData = {};
+    const deploymentData=JSON.parse(fs.readFileSync(path.join(__dirname,"../../frontend/address.json"), "utf8"));
     const gasOverrides = {
         maxFeePerGas: ethers.utils.parseUnits('100', 'gwei'),
         maxPriorityFeePerGas: ethers.utils.parseUnits('2', 'gwei'),
@@ -35,7 +35,7 @@ async function main() {
     // Deploy SingleSwapToken
     console.log("Deploying SingleSwapToken...");
     const SingleSwapToken = await hre.ethers.getContractFactory("SingleSwapToken");
-    const singleSwapToken = await SingleSwapToken.deploy();
+    const singleSwapToken = await SingleSwapToken.deploy(deploymentData.AuraCoin,deploymentData.factory,deploymentData.swaprouter);
     await singleSwapToken.deployed();
     deploymentData.SingleSwapToken = singleSwapToken.address;
     console.log(`singleSwapToken: ${singleSwapToken.address}`);

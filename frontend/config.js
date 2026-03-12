@@ -35,6 +35,7 @@ export const NETWORKS = {
       userStorageData: localhost.UserStorageData,
       quoter:localhost.quoter,
       singleSwapToken:localhost.SingleSwapToken,
+      aura:localhost.AuraCoin,
       tokens: [
         { 
           address: localhost.BooCoin, 
