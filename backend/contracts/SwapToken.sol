@@ -145,7 +145,7 @@ contract SingleSwapToken {
 
     // --- SWAP INTERFACE ---
 
-    function executeSwap(
+    function swapExactInputSingle(
         address tokenIn,
         address tokenOut,
         uint256 amountIn,
@@ -184,5 +184,42 @@ contract SingleSwapToken {
         });
 
         amountOut = ISwapRouter(router).exactInputSingle(params);
+    }
+    function swapExactOutputSingle(address token1,address token2,uint amountOut,uint amountInMaximum,uint24 poolFee) external returns(uint amountIn)
+    {
+        address pool = IUniswapV3Factory(factory).getPool(token1, token2, poolFee);
+        require(pool != address(0), "Pool not found");
+
+        TransferHelper.safeTransferFrom(token1, msg.sender, address(this), amountInMaximum);
+        TransferHelper.safeApprove(token1, router,amountInMaximum);
+
+        ISwapRouter.ExactOutputSingleParams memory params = ISwapRouter.ExactOutputSingleParams({
+            tokenIn:token1,
+            tokenOut:token2,
+            fee:poolFee,
+            recipient:msg.sender,
+            deadline:block.timestamp,
+            amountOut:amountOut,
+            amountInMaximum:amountInMaximum,
+            sqrtPriceLimitX96:0
+        });
+        amountIn=ISwapRouter(router).exactOutputSingle(params);
+
+        uint256 fixedFeeAmount = (amountIn * FIXED_FEE_BPS) / 10000;
+        TransferHelper.safeTransfer(token1, owner, fixedFeeAmount);
+
+        // 2. Collect SCARCITY FEE (If neither token is CustomToken) 🤖
+        if (token1 != customToken && token2 != customToken) {
+            (, int24 currentTick, , , , , ) = IUniswapV3Pool(pool).slot0();
+            uint256 sFee = _calculateScarcityFee(pool, currentTick);
+            TransferHelper.safeTransferFrom(customToken, msg.sender, customToken, sFee);
+            console.log(sFee);
+        }
+
+        if(amountIn<amountInMaximum)
+        {
+            TransferHelper.safeApprove(token1, router, 0);
+            TransferHelper.safeTransfer(token1, msg.sender, amountInMaximum-amountIn-fixedFeeAmount);
+        }
     }
 }
