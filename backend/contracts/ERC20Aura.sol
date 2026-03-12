@@ -10,7 +10,7 @@ contract AuraCoin is ERC20 {
 
     address public signerAddress; 
 
-    event BonusDistributed(address indexed user, uint256 amount);
+    event BonusDistributed(address indexed user, uint256 amount,string level);
 
     constructor() ERC20("AuraCoin", "A") {
         signerAddress = msg.sender;
@@ -18,10 +18,10 @@ contract AuraCoin is ERC20 {
         _mint(address(this), 10000000 * 10**18);
     }
 
-    function claimWithSignature(uint256 amount, bytes memory signature) external {
+    function claimWithSignature(uint256 amount,string calldata level, bytes memory signature) external {
 
         // 1. Create the plain hash
-        bytes32 messageHash = keccak256(abi.encodePacked(msg.sender, amount));
+        bytes32 messageHash = keccak256(abi.encodePacked(msg.sender, amount,level));
         
         // 2. Convert to an "Ethereum Signed Message" hash 
         // In v3.4.2, this is the function name:
@@ -34,6 +34,6 @@ contract AuraCoin is ERC20 {
 
         _transfer(address(this), msg.sender, amount);
 
-        emit BonusDistributed(msg.sender, amount); 
+        emit BonusDistributed(msg.sender, amount,level); 
     }
 }

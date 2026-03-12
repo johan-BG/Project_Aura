@@ -62,10 +62,10 @@ async function main() {
         JSON.stringify(deploymentData, null, 2)
     );
 
-    fs.writeFileSync(
-        path.join(__dirname, "../server/utils/contract.json"),
-        JSON.stringify(deploymentData.AuraCoin,null,0)
-    );
+    // fs.writeFileSync(
+    //     path.join(__dirname, "../server/utils/contract.json"),
+    //     JSON.stringify(deploymentData.AuraCoin,null,0)
+    // );
     
     console.log(`\n📝 Deployment data saved to ${addressesPath}`);
     console.log("\nDeployed Contracts:");

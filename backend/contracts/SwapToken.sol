@@ -72,7 +72,7 @@ contract SingleSwapToken {
     // Fee Configuration
     uint256 public minFee;
     uint256 public maxFee;
-    uint256 public constant FIXED_FEE_BPS = 10; // 0.1%
+    uint256 public constant FIXED_FEE_BPS = 5; // 0.1%
 
     // Trailing Reference State
     mapping(address => int24) public poolReferences;
