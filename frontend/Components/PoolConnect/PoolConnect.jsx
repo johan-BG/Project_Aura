@@ -89,7 +89,7 @@ const PoolConnect = ({setClosePool,getAllLiquidity,removeLiquidityAndUpdateUserd
         <div className={Style.PoolConnect_box_liquidity_list_button}>
           {el.liquidity == "0" ? (
              <button
-                onClick={() => handleCollectFees(el.tokenId)}
+                onClick={() => handleRemoveLiquidity(el.tokenId)}
                 disabled={loading === el.tokenId}
              >
                 {loading === el.tokenId ? "Processing..." : "Claim Fees"}

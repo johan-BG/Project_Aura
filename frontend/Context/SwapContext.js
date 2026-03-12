@@ -158,7 +158,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
 
         if(isExactOputput)
         {
-          const tarnsaction = await contracts.singleSwapToken.executeSwap(
+          const tarnsaction = await contracts.singleSwapToken.swapExactInputSingle(
           tokenIn.tokenAddress,
           tokenOut.tokenAddress,
           swapIn,
@@ -174,6 +174,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
             tokenOut.tokenAddress,
             swapOut,
             swapIn,
+            fee,
             {
             gasLimit: 1000000,
             },
