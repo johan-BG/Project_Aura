@@ -34,8 +34,11 @@ export const LiquidityProvider = ({ children }) => {
         setIsLoading(true);
         try {
             // Get number of NFTs owned by user
-            const nfts=await contracts.userStorage.getAllTransactions(account);
+            const allTxs = await contracts.userStorage.getAllTransactions(account);
             
+            // Filter out Swap logs (tokenId=0 or timestamps > 1T) so we only fetch actual LP NFTs
+            const nfts = allTxs.filter(tx => tx.tokenId.toString() !== "0" && Number(tx.tokenId.toString()) < 1000000000000);
+
             const liquidityResults = await Promise.all(
                 nfts.map(async (nft) => {
                     const positionInfo = await contracts.manager.positions(nft.tokenId);

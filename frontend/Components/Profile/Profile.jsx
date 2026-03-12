@@ -9,21 +9,13 @@ import { claimBonus } from '../../Utils/claimBonus';
 import { AuraCoinAddress, AuraCoinABI } from '../../Context/constants';
 
 const Profile = ({ account }) => {
-  const { provider, signer } = useSwapContext();
+  const { provider, signer, hasClaimed, setHasClaimed } = useSwapContext();
   
-  const [investmentTier] = useState("Bronze");
-  const [investmentProgress] = useState(79);
-  const [swapTier] = useState("Bronze");
-  const [swapProgress] = useState(0);
-
-  const [isClaimed, setIsClaimed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Optional: Add logic here to check if the user has already claimed the bonus
-  // useEffect(() => { ... check contract or backend ... }, [account]);
 
   const handleClaimBonus = async () => {
     if (!account || !signer) return alert("Please connect wallet first");
+    if (hasClaimed) return alert("Bonus already claimed!");
     
     setIsLoading(true);
     try {
@@ -45,9 +37,8 @@ const Profile = ({ account }) => {
       if (!response.ok) {
           alert(data.error); 
           setIsLoading(false);
-          // If the error means they already claimed it, we could hide the button
           if (data.error.toLowerCase().includes("already claimed")) {
-             setIsClaimed(true);
+             setHasClaimed(true);
           }
           return;
       }
@@ -57,7 +48,7 @@ const Profile = ({ account }) => {
       await tx.wait(); // Wait for confirmation
       
       console.log("Bonus Claimed successfully!");
-      setIsClaimed(true);
+      setHasClaimed(true);
 
     } catch (error) {
       console.error("Transaction Error:", error);
@@ -97,7 +88,11 @@ const Profile = ({ account }) => {
       </div>
       
       <div className={Style.Profile_sections}>
-        {!isClaimed && (
+        {hasClaimed ? (
+          <div className={Style.ClaimButtonWrapper}>
+            <span className={Style.BonusBadge} style={{ color: '#00ff00', fontWeight: 'bold' }}>Bonus Claimed ✅</span>
+          </div>
+        ) : (
           <div className={Style.ClaimButtonWrapper}>
             <button 
               className={Style.ClaimButton} 
@@ -108,8 +103,8 @@ const Profile = ({ account }) => {
             </button>
           </div>
         )}
-        <InvestmentRanking tier={investmentTier} percentage={investmentProgress} />
-        <SwapRanking tier={swapTier} percentage={swapProgress} />
+        <InvestmentRanking />
+        <SwapRanking />
       </div>
     </motion.div>
   );

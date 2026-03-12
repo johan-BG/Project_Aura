@@ -4,6 +4,7 @@ import singleSwapToken from "./SingleSwapToken.json";
 import swapMultiHop from "./SwapMultiHop.json";
 import IWETH from "./IWETH.json";
 import addresses from "../localhost_address.json";
+import userStorageData from "./UserStorageData.json";
 
 // Token addresses
 export const DAIAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
@@ -21,3 +22,8 @@ export const AuraCoinABI = auraCoin.abi;
 export const SingleSwapTokenABI = singleSwapToken.abi;
 export const SwapMultiHopABI = swapMultiHop.abi;
 export const IWETHABI = IWETH.abi;
+// Add this line to your Contract addresses section
+export const UserStorageDataAddress = addresses.UserStorageData; 
+
+// Add this line to your ABIs section
+export const UserStorageDataABI = userStorageData.abi;

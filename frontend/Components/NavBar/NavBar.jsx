@@ -11,8 +11,8 @@ const NavBar = () => {
   const { networkName, account, connectWallet, tokenData } = useSwapContext();
   const menuItems = [
     { name: "Swap", link: "/" },
-    { name: "Tokens", link: "/" },
-    { name: "Pools", link: "/" },
+    { name: "Tokens", link: "/Tokens" },
+    { name: "Pools", link: "/Pools" },
   ];
   const [openModel, setOpenModel] = useState(false);
   const [openTokenBox, setOpenTokenBox] = useState(false);
@@ -29,7 +29,7 @@ const NavBar = () => {
           </div>
           <div className={Style.NavBar_box_left_menu}>
             {menuItems.map((el, i) => (
-              <Link key={i + 1} href={{ pathname: `${el.name}` }}>
+              <Link key={i + 1} href={{ pathname: `${el.link}` }}>
                 <p className={Style.NavBar_box_left_menu_item}>{el.name}</p>
               </Link>
             ))}
@@ -90,7 +90,7 @@ const NavBar = () => {
       {/* MOBILE DRAWER */}
       <div className={`${Style.mobileMenu} ${openMenu ? Style.open : ""}`}>
         {menuItems.map((el, i) => (
-          <Link key={i} href={{ pathname: `${el.name}` }} onClick={() => setOpenMenu(false)}>
+          <Link key={i} href={{ pathname: `${el.link}` }} onClick={() => setOpenMenu(false)}>
             {el.name}
           </Link>
         ))}
