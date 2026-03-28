@@ -27,6 +27,20 @@ RPC_URLS = {
     "localhost": "http://127.0.0.1:8545"
 }
 
+AMOUNTs={
+    "signIn": 50 * 10**18,
+    "Bronze": 100 * 10**18,
+    "Silver": 200 * 10**18,
+    "Gold": 300 * 10**18,
+    "Platinum": 400 * 10**18,
+    "Diamond": 500 * 10**18,
+    "F":100*10**18,
+    "D":200*10**18,
+    "C":300*10**18, 
+    "B":400*10**18,
+    "A":500*10**18,
+}
+
 client = MongoClient(MONGO_URI)
 db = client["aura_project"]
 claims_collection = db["claims"]
@@ -45,7 +59,7 @@ def get_signature():
         return jsonify({"error": "Bonus already fully claimed and verified."}), 403
 
     # Cryptographic Signing
-    amount_to_claim = 50 * 10**18 if level == "signIn" else 100 * 10**18
+    amount_to_claim = AMOUNTs.get(level, 0)
     msg_hash = Web3.solidity_keccak(['address', 'uint256', 'string'], [Web3.to_checksum_address(user_address), amount_to_claim, level])
     message = encode_defunct(hexstr=msg_hash.hex())
     signed_message = Account.sign_message(message, private_key=PRIVATE_KEY[network])
