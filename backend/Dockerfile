@@ -8,8 +8,8 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && apt-get install -y --no-install-recommends gcc && \
     rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+COPY requirement.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirement.txt
 RUN pip install --prefix=/install gunicorn certifi
 
 # Stage 2: Final Image
