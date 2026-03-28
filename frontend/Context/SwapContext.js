@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext, useCallback ,useMemo} from "react";
+import React, { useState, useEffect, createContext, useContext, useCallback ,useMemo,useRef} from "react";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import { NETWORKS, DEFAULT_CHAIN_ID, ARTIFACTS ,TOKEN_RESULTS} from "../config";
@@ -6,8 +6,8 @@ const axios =require("axios");
 import { getLogoUrl } from "../Utils/tokenHelper";
 import { getQuoteExactInput,getQuoteExactOutput } from "../Utils/swapUpdatePrice";
 import { saveSession, getSession }  from "../Utils/sessionControl";
-import { UserStorageDataAddress, UserStorageDataABI, AuraCoinAddress, AuraCoinABI } from "./constants";
-
+import { claimBonus } from "../Utils/claimBonus";
+import { liquidityLevel,swapLevel } from "../Utils/level";
 const TOP_TOKENS_QUERY = `
 {
   tokens(orderBy: volumeUSD, orderDirection: desc, first: ${TOKEN_RESULTS}) {
@@ -34,15 +34,22 @@ export const SwapTokenContextProvider = ({ children }) => {
   const [contracts, setContracts] = useState({ router: null, quoter: null ,singleSwapToken: null, auraCoin: null, userStorageData: null});
   const [hasClaimed, setHasClaimed] = useState(false);
   const [allTransactions, setAllTransactions] = useState([]);
-  const [swapCount, setSwapCount] = useState(0);
-  const [poolCount, setPoolCount] = useState(0);
+  const [Lpercentage,setLpercentage]=useState(0);
+  const [Spercentage,setSpercentage]=useState(0);
+  const [Ltier,setLTier]=useState("");
+  const [Stier,setSTier]=useState("");
+
+  const hasPriorSession = useRef(!!getSession());
+  const prevLTier = useRef("");
+  const prevSTier = useRef("");
+
   // --- HELPER: Get Active Network Config ---
   const activeConfig = useMemo(() => {
   return NETWORKS[chainId] || NETWORKS[DEFAULT_CHAIN_ID];
 }, [chainId]);
 
   // --- 3. CORE DATA LOADER ---
-  const fetchAccountData = useCallback(async (userAddr, currentProvider, currentChainId) => {
+  const fetchAccountData = useCallback(async (userAddr, currentProvider, currentChainId,contract) => {
     const config = NETWORKS[currentChainId];
     if (!config) return;
 
@@ -69,20 +76,22 @@ export const SwapTokenContextProvider = ({ children }) => {
 
       // Fetch specific app data explicitly avoiding activeConfig checks
       try {
-          const storageContract = new ethers.Contract(UserStorageDataAddress, UserStorageDataABI, currentProvider);
-          const txs = await storageContract.getAllTransactions(userAddr);
-          console.log("RAW_TX_DATA:", txs);
+         
+          const txs = await contract.userStorageData.getAllTransactions(userAddr);
           // Swaps are logged using Date.now() (timestamps > 1000000000000). LP Positions use basic sequential IDs (1, 2, 3...)
           const swaps = txs.filter(tx => Number(tx.tokenId.toString()) >= 1000000000000 || tx.tokenId.toString() === "0");
           const pools = txs.filter(tx => Number(tx.tokenId.toString()) < 1000000000000 && tx.tokenId.toString() !== "0");
           setAllTransactions(txs);
-          setSwapCount(swaps.length);
-          setPoolCount(pools.length);
 
-          const auraContract = new ethers.Contract(AuraCoinAddress, AuraCoinABI, currentProvider);
-          const filter = auraContract.filters.BonusDistributed(userAddr);
-          const logs = await auraContract.queryFilter(filter);
-          setHasClaimed(logs.length > 0);
+          const {ltier,lpercentage}=liquidityLevel(pools.length);
+          const {stier,spercentage}=swapLevel(swaps.length);
+         
+
+          setLTier(ltier);
+          setSTier(stier);
+          setSpercentage(spercentage);
+          setLpercentage(lpercentage);
+          
       } catch (err) {
           console.error("Error verifying storage or aura events:", err);
       }
@@ -112,7 +121,7 @@ export const SwapTokenContextProvider = ({ children }) => {
       setChainId(chainId);
       setNetworkName(name);
 
-      await fetchAccountData(address, newProvider, chainId);
+      //await fetchAccountData(address, newProvider, chainId);
       await fetchTopTokens(netconfig.subgraphUrl);
     } catch (error) {
       console.error("Connection failed:", error);
@@ -176,10 +185,9 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
         const swapIn=ethers.utils.parseUnits(amountIn.toString(),tokenIn.decimals);
         const swapOut=ethers.utils.parseUnits(amountOut.toString(),tokenOut.decimals);
         const contract=new ethers.Contract(tokenIn.tokenAddress,ARTIFACTS.ERC20, signer || provider);
-        const aura = new ethers.Contract(activeConfig.contracts.aura,ARTIFACTS.ERC20,signer || provider);
         const sfee=await contracts.singleSwapToken.estimateScarcityFee(tokenIn.tokenAddress,tokenOut.tokenAddress,fee);
         console.log(sfee.toString());
-        await aura.approve(activeConfig.contracts.singleSwapToken,sfee);
+        await contracts.auraCoin.approve(activeConfig.contracts.singleSwapToken,sfee);
         await contract.approve(activeConfig.contracts.singleSwapToken,swapIn);
 
         if(isExactOputput)
@@ -194,14 +202,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
           },
         );
         await tarnsaction.wait();
-        try {
-            const swapId = Date.now();
-            const storageContract = new ethers.Contract(UserStorageDataAddress, UserStorageDataABI, signer);
-            const logTx = await storageContract.addToBlockchain(activeConfig.contracts.router, tokenIn.tokenAddress, tokenOut.tokenAddress, swapId); 
-            await logTx.wait();
-        } catch (err) {
-            console.error("Error logging swap to UserStorageData:", err);
-        }
+
         }
         else{
           const tarnsaction = await contracts.singleSwapToken.swapExactOutputSingle(
@@ -215,16 +216,16 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
             },
           );
           await tarnsaction.wait();
-          try {
-              const swapId = Date.now();
-              const storageContract = new ethers.Contract(UserStorageDataAddress, UserStorageDataABI, signer);
-              const logTx = await storageContract.addToBlockchain(activeConfig.contracts.router, tokenIn.tokenAddress, tokenOut.tokenAddress, swapId); 
-              await logTx.wait();
-          } catch (err) {
-              console.error("Error logging swap to UserStorageData:", err);
-          }
         }
-        fetchAccountData(account, provider, chainId);
+        try {
+            const swapId = Date.now();
+            console.log(contracts.userStorageData);
+            const logTx = await contracts.userStorageData.addToBlockchain(activeConfig.contracts.router, tokenIn.tokenAddress, tokenOut.tokenAddress, swapId); 
+            await logTx.wait();
+        } catch (err) {
+            console.error("Error logging swap to UserStorageData:", err);
+        }
+        fetchAccountData(account, provider, chainId,contracts);
       }
       catch(e)
       {
@@ -237,13 +238,56 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     const target = signer || provider;
 
     setContracts({
-      //router: new ethers.Contract(activeConfig.contracts.router, ARTIFACTS.router, target),
       quoter: new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, target), // Preloaded
       singleSwapToken:new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target),
-      auraCoin: activeConfig?.contracts?.auraCoin ? new ethers.Contract(activeConfig.contracts.auraCoin, ARTIFACTS.ERC20, target) : null,
+      auraCoin: activeConfig?.contracts?.aura ? new ethers.Contract(activeConfig.contracts.aura, ARTIFACTS.aura, target) : null,
       userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null
     });
   }, [signer, provider, activeConfig]);
+
+  useEffect(() => {
+    if (account && provider && chainId && contracts.userStorageData!=null) {
+
+      fetchAccountData(account, provider, chainId,contracts);
+    }
+  }, [account, provider, chainId, contracts.userStorageData, fetchAccountData, contracts]);
+
+  useEffect(() => {
+    if (!account || !contracts.auraCoin || !networkName) return;
+
+    const claimIfEligible = async () => {
+      let shouldClaimL = false;
+      let shouldClaimS = false;
+      console.log(hasPriorSession);
+      const lTierChanged = Ltier !== prevLTier.current;
+      const sTierChanged = Stier !== prevSTier.current;
+      console.log(lTierChanged,sTierChanged);
+      if (!hasPriorSession.current) {
+        // No prior session: Claim on the first valid tier fetch AND any future changes
+        if (Ltier && Ltier !== "" && lTierChanged) shouldClaimL = true;
+        if (Stier && Stier !== "" && sTierChanged) shouldClaimS = true;
+      } else {
+        // Had prior session: DO NOT claim on the initial data fetch (when prev is "")
+        // ONLY claim when moving from one valid tier to a NEW valid tier
+        if (prevLTier.current !== "" && Ltier !== "" && lTierChanged) shouldClaimL = true;
+        if (prevSTier.current !== "" && Stier !== "" && sTierChanged) shouldClaimS = true;
+      }
+
+      try {
+        console.log(shouldClaimL,shouldClaimS)
+        if (shouldClaimL) await claimBonus(account, contracts.auraCoin, networkName, Ltier);
+        if (shouldClaimS) await claimBonus(account, contracts.auraCoin, networkName, Stier);
+      } catch (error) {
+        console.error("Failed to claim bonus:", error);
+      }
+
+      // Update refs for the next render
+      prevLTier.current = Ltier;
+      prevSTier.current = Stier;
+    };
+
+    claimIfEligible();
+  }, [Ltier, Stier, account, contracts.auraCoin, networkName]);
 
   // --- 5. AUTOMATIC REFRESH ON ACCOUNT/CHAIN CHANGE ---
   useEffect(() => {
@@ -291,12 +335,14 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     hasClaimed,
     setHasClaimed,
     allTransactions,
-    swapCount,
-    poolCount,
+    Ltier,
+    Stier,
+    Spercentage,
+    Lpercentage,
     getSwapQuote,
     connectWallet,
     singleSwap,
-    refreshData: () => fetchAccountData(account, provider, chainId)
+    refreshData: () => fetchAccountData(account, provider, chainId,contracts)
   };
 
   return (

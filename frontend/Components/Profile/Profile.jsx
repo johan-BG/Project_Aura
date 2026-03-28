@@ -9,7 +9,7 @@ import { claimBonus } from '../../Utils/claimBonus';
 import { AuraCoinAddress, AuraCoinABI } from '../../Context/constants';
 
 const Profile = ({ account }) => {
-  const { refreshData,provider, signer } = useSwapContext();
+  const { refreshData,provider, signer ,networkName } = useSwapContext();
   
   const [investmentTier] = useState("Bronze");
   const [investmentProgress] = useState(79);
@@ -29,10 +29,9 @@ const Profile = ({ account }) => {
     try {
       
       const contract = new ethers.Contract(AuraCoinAddress, AuraCoinABI, signer);
-      claimBonus(account,contract);
+      claimBonus(account,contract,networkName,"signIn");
       refreshData();
       console.log("Bonus Claimed successfully!");
-      setIsClaimed(true);
 
     } catch (error) {
       console.error("Transaction Error:", error);
@@ -44,6 +43,7 @@ const Profile = ({ account }) => {
         alert("Transaction failed or was rejected by your wallet.");
       }
     } finally {
+      setIsClaimed(true);
       setIsLoading(false);
     }
   };

@@ -36,8 +36,8 @@ fs.writeFileSync(
         path.join(__dirname, `../../frontend/${network}_address.json`),
         JSON.stringify(deploymentData,null,0)
     );
-const serverData=JSON.parse(fs.readFileSync(path.join(__dirname,"../server/utils/contract.json"), "utf8"));
-serverData[`${network}`]=deploymentData.AuraCoin;
+// const serverData=JSON.parse(fs.readFileSync(path.join(__dirname,"../server/utils/contract.json"), "utf8"));
+// serverData[`${network}`]={address:deploymentData.AuraCoin,block:deploymentData.block};
 
 fs.writeFileSync(
         path.join(__dirname, "../server/utils/contract.json"),

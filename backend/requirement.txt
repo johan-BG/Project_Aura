@@ -1,4 +1,6 @@
-python-dotenv
-web3
 flask
 flask-cors
+pymongo[srv]
+web3
+eth-account
+python-dotenv

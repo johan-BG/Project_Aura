@@ -29,6 +29,8 @@ async function main() {
     const AuraCoin = await hre.ethers.getContractFactory("AuraCoin");
     const auraCoin = await AuraCoin.deploy();
     await auraCoin.deployed();
+    const recieipt = await auraCoin.deployTransaction.wait();
+    deploymentData.block = recieipt.blockNumber;
     deploymentData.AuraCoin = auraCoin.address;
     console.log(`auraCoin: ${auraCoin.address}`);
 

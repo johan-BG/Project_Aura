@@ -10,11 +10,13 @@ import manager from "@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositi
 import quoterAbi from "@uniswap/v3-periphery/artifacts/contracts/lens/QuoterV2.sol/QuoterV2.json";
 import SingleSwapTokenABI  from "./Context/SingleSwapToken.json";
 import factory from "@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json";
+import aura from "./Context/AuraCoin.json";
 
 
 export const ARTIFACTS = {
   userStorgeData: userStorgeData.abi,
   ERC20:ERC20.abi,
+  aura:aura.abi,
   pool:pool.abi,
   manager:manager.abi,
   quoter:quoterAbi.abi,
@@ -90,6 +92,7 @@ export const NETWORKS = {
       userStorageData: sepolia.UserStorageData,
       quoter:sepolia.quoter,
       singleSwapToken:sepolia.SingleSwapToken,
+      aura:sepolia.AuraCoin,
       tokens: [
         { 
           address: sepolia.BooCoin, 
@@ -143,6 +146,7 @@ export const NETWORKS = {
       userStorageData: optimism.UserStorageData,
       quoter:optimism.quoter,
       singleSwapToken:optimism.SingleSwapToken,
+      aura:optimism.AuraCoin,
       tokens: [
         { 
           address: optimism.BooCoin, 

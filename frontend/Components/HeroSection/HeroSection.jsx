@@ -56,7 +56,7 @@ const HeroSection = () => {
         tokenOne.tokenAddress,
         tokenTwo.tokenAddress,
         3000,
-        isOutputDirection?value*0.9:value
+        isOutputDirection?value*0.95:value
       )
 
       if (data) {
@@ -67,7 +67,7 @@ const HeroSection = () => {
         } else {
           // If user types in the bottom box, we estimate the top box input required
           //setSwapAmount(data); 
-          const amountIn =Number(ethers.utils.formatUnits(data, tokenOne.decimals)) * 1.1;
+          const amountIn =Number(ethers.utils.formatUnits(data, tokenOne.decimals)) * 1.05;
 
           setPoolMessage(
             `Requires ~${amountIn.toString().slice(0,7)} ${tokenOne.symbol} for ${value} ${tokenTwo.symbol}`
