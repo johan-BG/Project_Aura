@@ -4,3 +4,4 @@ pymongo[srv]
 web3
 eth-account
 python-dotenv
+gunicorn
