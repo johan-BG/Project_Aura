@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # --- FLASK BACKEND ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env
+    networks:
+      - aura-network
+
+  # --- REACT FRONTEND ---
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - aura-network
+
+networks:
+  aura-network:
+    driver: bridge
