@@ -277,6 +277,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
         console.log(shouldClaimL,shouldClaimS)
         if (shouldClaimL) await claimBonus(account, contracts.auraCoin, networkName, Ltier);
         if (shouldClaimS) await claimBonus(account, contracts.auraCoin, networkName, Stier);
+        fetchAccountData(account, provider, chainId,contracts);
       } catch (error) {
         console.error("Failed to claim bonus:", error);
       }
@@ -339,6 +340,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     Stier,
     Spercentage,
     Lpercentage,
+    contracts,
     getSwapQuote,
     connectWallet,
     singleSwap,

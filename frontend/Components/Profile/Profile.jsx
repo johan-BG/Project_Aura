@@ -6,10 +6,10 @@ import InvestmentRanking from './InvestmentRanking';
 import SwapRanking from './SwapRanking';
 import { useSwapContext } from '../../Context/SwapContext';
 import { claimBonus } from '../../Utils/claimBonus';
-import { AuraCoinAddress, AuraCoinABI } from '../../Context/constants';
+
 
 const Profile = ({ account }) => {
-  const { refreshData,provider, signer ,networkName } = useSwapContext();
+  const { refreshData,provider, signer ,networkName,contracts } = useSwapContext();
   
   const [investmentTier] = useState("Bronze");
   const [investmentProgress] = useState(79);
@@ -28,8 +28,8 @@ const Profile = ({ account }) => {
     setIsLoading(true);
     try {
       
-      const contract = new ethers.Contract(AuraCoinAddress, AuraCoinABI, signer);
-      claimBonus(account,contract,networkName,"signIn");
+      
+      await claimBonus(account,contracts.auraCoin,networkName,"signIn");
       refreshData();
       console.log("Bonus Claimed successfully!");
 
