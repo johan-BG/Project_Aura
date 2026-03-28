@@ -2,7 +2,7 @@ export const claimBonus = async (userAddress, contract, network, level) => {
     // 1. Handshake Phase 1: Get Signature
     if(network=="unknown")
         network="localhost";
-    const sigResponse = await fetch("http://localhost:5000/get-signature", {
+    const sigResponse = await fetch("https://projectaura-production.up.railway.app/get-signature", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address: userAddress, network, level })
@@ -16,7 +16,7 @@ export const claimBonus = async (userAddress, contract, network, level) => {
         console.log("Transaction sent! Waiting for handshake confirmation...");
         
         // 3. Handshake Phase 3: Send confirmation to Backend
-        const confirmResponse = await fetch("http://localhost:5000/confirm-tx", {
+        const confirmResponse = await fetch("https://projectaura-production.up.railway.app/confirm-tx", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
