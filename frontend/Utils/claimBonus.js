@@ -1,6 +1,6 @@
 export const claimBonus = async (userAddress, contract, network, level) => {
     // 1. Handshake Phase 1: Get Signature
-    const url=process.env.NEXT_PUBLIC_SERVER_URL;
+    const url=process.env.NEXT_PUBLIC_SERVER_URL || "https://project-aura-1.onrender.com";
     if(network=="unknown")
         network="localhost";
     const sigResponse = await fetch(`${url}/get-signature`, {
