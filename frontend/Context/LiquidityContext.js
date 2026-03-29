@@ -95,7 +95,6 @@ export const LiquidityProvider = ({ children }) => {
                 params.tokenPrice2,
                 contracts
             );
-            console.log(poolAddress,params);
 
             const info = await addLiquidity(
                 params.token0,
@@ -107,7 +106,7 @@ export const LiquidityProvider = ({ children }) => {
                 target,
                 account
             );
-            console.log(info);
+          
             // Save to your custom UserStorage smart contract
             await contracts.userStorage.addToBlockchain(
                 poolAddress,
@@ -119,7 +118,6 @@ export const LiquidityProvider = ({ children }) => {
             // Refresh the list after saving
             fetchUserPositions();
             refreshData();
-            console.log("refreshed");
         } catch (error) {
             console.error("Operation failed:", error);
         }

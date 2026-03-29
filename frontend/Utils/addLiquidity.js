@@ -34,12 +34,12 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     const token0Contract = new ethers.Contract(tokenA.tokenAddress, ARTIFACTS.ERC20, signer);
     const token1Contract = new ethers.Contract(tokenB.tokenAddress, ARTIFACTS.ERC20, signer);
 
-    console.log("Checking approvals...");
+    
 
     // Check and Approve Token A
     const allowanceA = await token0Contract.allowance(account, contracts.manager.address);
     if (allowanceA.lt(amount0Wei)) {
-      console.log("Approving Token A...");
+      
       const txA = await token0Contract.approve(contracts.manager.address, amount0Wei);
       await txA.wait();
     }
@@ -47,7 +47,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     // Check and Approve Token B
     const allowanceB = await token1Contract.allowance(account, contracts.manager.address);
     if (allowanceB.lt(amount1Wei)) {
-      console.log("Approving Token B...");
+      
       const txB = await token1Contract.approve(contracts.manager.address, amount1Wei);
       await txB.wait();
     }
@@ -81,7 +81,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     let existingTokenId = null;
     const balance = await contracts.manager.balanceOf(account);
 
-    console.log(`Checking ${balance} existing positions for a match...`);
+    
 
     for (let i = 0; i < balance; i++) {
       const tokenId = await contracts.manager.tokenOfOwnerByIndex(account, i);
@@ -116,7 +116,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
 
     let receipt;
     if (existingTokenId) {
-      console.log(`Matching position found (ID: ${existingTokenId}). Increasing liquidity...`);
+      
       
       const increaseParams = {
         tokenId: existingTokenId,
@@ -131,7 +131,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
       receipt = await tx.wait();
     }
     else {
-      console.log("No matching position found. Minting new NFT...");
+      
 
     // 5. Execute Transaction
     const params = {

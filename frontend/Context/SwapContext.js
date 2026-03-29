@@ -181,12 +181,10 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
 
     const singleSwap= async(isExactOputput,tokenIn,tokenOut,amountIn,amountOut,fee) => {
       try{
-        console.log(tokenIn.tokenAddress);
         const swapIn=ethers.utils.parseUnits(amountIn.toString(),tokenIn.decimals);
         const swapOut=ethers.utils.parseUnits(amountOut.toString(),tokenOut.decimals);
         const contract=new ethers.Contract(tokenIn.tokenAddress,ARTIFACTS.ERC20, signer || provider);
         const sfee=await contracts.singleSwapToken.estimateScarcityFee(tokenIn.tokenAddress,tokenOut.tokenAddress,fee);
-        console.log(sfee.toString());
         await contracts.auraCoin.approve(activeConfig.contracts.singleSwapToken,sfee);
         await contract.approve(activeConfig.contracts.singleSwapToken,swapIn);
 
@@ -219,7 +217,6 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
         }
         try {
             const swapId = Date.now();
-            console.log(contracts.userStorageData);
             const logTx = await contracts.userStorageData.addToBlockchain(activeConfig.contracts.router, tokenIn.tokenAddress, tokenOut.tokenAddress, swapId); 
             await logTx.wait();
         } catch (err) {
@@ -258,10 +255,8 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     const claimIfEligible = async () => {
       let shouldClaimL = false;
       let shouldClaimS = false;
-      console.log(hasPriorSession);
       const lTierChanged = Ltier !== prevLTier.current;
       const sTierChanged = Stier !== prevSTier.current;
-      console.log(lTierChanged,sTierChanged);
       if (!hasPriorSession.current) {
         // No prior session: Claim on the first valid tier fetch AND any future changes
         if (Ltier && Ltier !== "" && lTierChanged) shouldClaimL = true;
@@ -274,7 +269,6 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       }
 
       try {
-        console.log(shouldClaimL,shouldClaimS)
         if (shouldClaimL) await claimBonus(account, contracts.auraCoin, networkName, Ltier);
         if (shouldClaimS) await claimBonus(account, contracts.auraCoin, networkName, Stier);
         fetchAccountData(account, provider, chainId,contracts);
@@ -298,7 +292,6 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
         else setAccount("");
       });
       window.ethereum.on("chainChanged", (ChainId) => {
-      console.log("Network changed to:", parseInt(ChainId, 16));
       window.location.reload(); 
     });
     }
@@ -315,7 +308,6 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     const session = getSession();
     
     if (session && session.address && session.chainId ) {
-      console.log("Restoring session for:", session.address);
       setAccount(session.address);
       setChainId(session.chainId);
       connectWallet();
