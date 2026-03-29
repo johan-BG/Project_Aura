@@ -35,7 +35,7 @@ const AllTokens = ({ allTokenList }) => {
             <p className={Style.hide}>{i + 1}</p>
             <p className={Style.AllTokens_box_list_para}>
               <small>
-                <Image src={el.logo} alt={el.symbol} width={25} height={25} />
+                <Image src={el.logo} alt={el.symbol} width={25} height={25} unoptimized={true}/>
               </small>
               <small>{el.name}</small>
               <small>{el.symbol}</small>

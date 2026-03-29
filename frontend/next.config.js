@@ -1,10 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactCompiler: true,
   reactStrictMode: true,
   images: {
-    domains: ["raw.githubusercontent.com", "gateway.thegraph.com"],
-  }
-};
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        port: '',
+        pathname: '/trustwallet/assets/master/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'app.uniswap.org',
+        port: '',
+        pathname: '/static/media/**',
+      },
+    ],
+  },
+}
 
-export default nextConfig;
+export default nextConfig
