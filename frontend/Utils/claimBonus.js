@@ -1,6 +1,6 @@
 export const claimBonus = async (userAddress, contract, network, level) => {
     // 1. Handshake Phase 1: Get Signature
-    const url=process.env.NEXT_PUBLIC_SERVER_URL || "https://project-aura-1.onrender.com";
+    const url=process.env.NEXT_PUBLIC_SERVER_URL;
     if(network=="unknown")
         network="localhost";
     const sigResponse = await fetch(`${url}/get-signature`, {
@@ -14,7 +14,6 @@ export const claimBonus = async (userAddress, contract, network, level) => {
     // 2. Handshake Phase 2: Execute On-Chain
     try {
         const tx = await contract.claimWithSignature(sigData.amount, level, sigData.signature);
-        console.log("Transaction sent! Waiting for handshake confirmation...");
         
         // 3. Handshake Phase 3: Send confirmation to Backend
         const confirmResponse = await fetch(`${url}/confirm-tx`, {
