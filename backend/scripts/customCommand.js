@@ -28,21 +28,9 @@ runCommand(`node scripts/copyABI.js`);
 
 const deploymentData=JSON.parse(fs.readFileSync(path.join(__dirname,"../../frontend/address.json"), "utf8"));
 
-// fs.rename(path.join(__dirname,"../../frontend/address.json"), path.join(__dirname,`../../frontend/${network}_address.json`), (err) => {
-//   if (err) throw err;
-//   console.log('Rename complete!');
-// });
 fs.writeFileSync(
         path.join(__dirname, `../../frontend/${network}_address.json`),
         JSON.stringify(deploymentData,null,0)
     );
-// const serverData=JSON.parse(fs.readFileSync(path.join(__dirname,"../server/utils/contract.json"), "utf8"));
-// serverData[`${network}`]={address:deploymentData.AuraCoin,block:deploymentData.block};
-
-fs.writeFileSync(
-        path.join(__dirname, "../server/utils/contract.json"),
-        JSON.stringify(serverData,null,0)
-    );
-
 
 console.log("\n✅ All scripts executed successfully!");
