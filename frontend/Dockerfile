@@ -14,6 +14,7 @@ WORKDIR /app
 # These ARGs allow Render's "Build Args" to pass through to Next.js
 ARG NEXT_PUBLIC_SERVER_URL
 ENV NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL
+ENV NEXT_PUBLIC_ALCHEMY_API_KEY=$NEXT_PUBLIC_ALCHEMY_API_KEY
 # --- CRITICAL FIX END ---
 
 COPY --from=deps /app/node_modules ./node_modules
