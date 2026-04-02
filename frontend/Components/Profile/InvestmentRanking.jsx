@@ -11,7 +11,7 @@ const InvestmentRanking = () => {
       title="Investment Ranking"
       tier={Ltier}
       percentage={Lpercentage}
-      badgeText={<span><span className={Style.LevelProgress_Percentage}>{Lpercentage}%</span> to Next Tier</span>}
+      badgeText={<span><span className={Style.LevelProgress_Percentage}>{100-Lpercentage}%</span> to Next Tier</span>}
     />
   );
 };

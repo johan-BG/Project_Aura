@@ -1,8 +1,11 @@
 export const claimBonus = async (userAddress, contract, network, level) => {
     // 1. Handshake Phase 1: Get Signature
-    const url=process.env.NEXT_PUBLIC_SERVER_URL;
+    let url=process.env.NEXT_PUBLIC_SERVER_URL;
     if(network=="unknown")
-        network="localhost";
+        {
+            network="localhost";
+            url="http://127.0.0.1:5000";
+        }
     const sigResponse = await fetch(`${url}/get-signature`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

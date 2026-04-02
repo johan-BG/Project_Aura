@@ -12,7 +12,7 @@ import SingleSwapTokenABI  from "./Context/SingleSwapToken.json";
 import factory from "@uniswap/v3-core/artifacts/contracts/UniswapV3Factory.sol/UniswapV3Factory.json";
 import aura from "./Context/AuraCoin.json";
 
-console.log(process.env.NEXT_PUBLIC_ALCHEMY_API_KEY);
+
 export const ARTIFACTS = {
   userStorgeData: userStorgeData.abi,
   ERC20:ERC20.abi,

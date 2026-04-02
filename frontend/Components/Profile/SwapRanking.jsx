@@ -12,7 +12,7 @@ const SwapRanking = () => {
       title="Swap Ranking"
       tier={Stier}
       percentage={Spercentage}
-      badgeText={<span><span className={Style.LevelProgress_Percentage}>{Spercentage}%</span> to Next Tier</span>}
+      badgeText={<span><span className={Style.LevelProgress_Percentage}>{100-Spercentage}%</span> to Next Tier</span>}
     />
   );
 };
