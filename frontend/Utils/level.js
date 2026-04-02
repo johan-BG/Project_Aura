@@ -24,7 +24,7 @@ export const liquidityLevel= (poolCount) => {
       p = 100;
     }
 
-    return { ltier: t, lpercentage: Math.floor(p) };
+    return { ltier: t, lpercentage: 100-Math.floor(p) };
   };
 
   export const swapLevel = (swapCount) => {
@@ -53,5 +53,5 @@ export const liquidityLevel= (poolCount) => {
       p = 100;
     }
 
-    return { stier: t, spercentage: Math.floor(p) };
+    return { stier: t, spercentage: 100-Math.floor(p) };
   };

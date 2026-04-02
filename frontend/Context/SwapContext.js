@@ -26,6 +26,7 @@ export const SwapTokenContextProvider = ({ children }) => {
   const [account, setAccount] = useState("");
   const [signer, setSigner] = useState(null);
   const [provider, setProvider] = useState(null);
+  const [readProvider, setReadProvider] = useState(null);
   const [chainId, setChainId] = useState(DEFAULT_CHAIN_ID);
   const [networkName, setNetworkName] = useState("");
   const [tokenData, setTokenData] = useState([]);
@@ -109,12 +110,12 @@ export const SwapTokenContextProvider = ({ children }) => {
       const connection = await web3Modal.connect();
       const newProvider = new ethers.providers.Web3Provider(connection);
       const newSigner = newProvider.getSigner();
-      
       const { chainId , name } = await newProvider.getNetwork();
       const address = await newSigner.getAddress();
       const netconfig=NETWORKS[DEFAULT_CHAIN_ID];
+      const newReadProvider = new ethers.providers.JsonRpcProvider(NETWORKS[chainId].rpc);
       saveSession(address,chainId);
-      
+      setReadProvider(newReadProvider);
       setProvider(newProvider);
       setSigner(newSigner);
       setAccount(address);
@@ -238,14 +239,14 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       quoter: new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, target), // Preloaded
       singleSwapToken:new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target),
       auraCoin: activeConfig?.contracts?.aura ? new ethers.Contract(activeConfig.contracts.aura, ARTIFACTS.aura, target) : null,
-      userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null
+      userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, readProvider) : null
     });
   }, [signer, provider, activeConfig]);
 
   useEffect(() => {
     if (account && provider && chainId && contracts.userStorageData!=null) {
 
-      fetchAccountData(account, provider, chainId,contracts);
+      fetchAccountData(account, readProvider, chainId,contracts);
     }
   }, [account, provider, chainId, contracts.userStorageData, fetchAccountData, contracts]);
 
@@ -336,7 +337,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     getSwapQuote,
     connectWallet,
     singleSwap,
-    refreshData: () => fetchAccountData(account, provider, chainId,contracts)
+    refreshData: () => fetchAccountData(account, readProvider, chainId,contracts)
   };
 
   return (
