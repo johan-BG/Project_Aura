@@ -54,7 +54,7 @@ def get_signature():
     network = data.get('network')
 
     # Check if a COMPLETED claim already exists
-    existing = claims_collection.find_one({"user_address": user_address, "level": level, "status": "completed"})
+    existing = claims_collection.find_one({"user_address": user_address,"network":network, "level": level, "status": "completed"})
     if existing:
         return jsonify({"error": "Bonus already fully claimed and verified."}), 403
 
