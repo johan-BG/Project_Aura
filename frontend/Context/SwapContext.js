@@ -239,7 +239,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       quoter: new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, target), // Preloaded
       singleSwapToken:new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target),
       auraCoin: activeConfig?.contracts?.aura ? new ethers.Contract(activeConfig.contracts.aura, ARTIFACTS.aura, target) : null,
-      userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, readProvider) : null
+      userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null
     });
   }, [signer, provider, activeConfig]);
 
