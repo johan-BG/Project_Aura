@@ -152,7 +152,8 @@ export const LiquidityProvider = ({ children }) => {
             allLiquidity, 
             isLoading,  
             removeLiquidityAndUpdateData,
-            createLiquidityAndPool 
+            createLiquidityAndPool,
+            fetchUserPositions
         }}>
             {children}
         </LiquidityContext.Provider>

@@ -5,10 +5,12 @@ import Style from "./HeroSection.module.css";
 import images from "../../assets";
 import { Token, SearchToken } from "../index";
 import { useSwapContext } from "../../Context/SwapContext";
+import { useLiquidity } from "../../Context/LiquidityContext";
 
 const HeroSection = () => {
   // --- STATE ---
   const [openSetting, setOpenSetting] = useState(false);
+  const { fetchUserPositions } = useLiquidity();
   const [openToken, setOpenToken] = useState(false);
   const [openTokenTwo, setOpenTokenTwo] = useState(false);
   const [loading,setLoading] = useState(false);
@@ -108,6 +110,7 @@ const HeroSection = () => {
       tokenSwapOutPut,
       3000
     );
+    fetchUserPositions();
     setSwapAmount("");
     setTokenSwapOutPut(0);
     setPoolMessage("");
