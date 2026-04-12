@@ -295,8 +295,6 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       window.ethereum.on("chainChanged", (ChainId) => {
       window.location.reload(); 
     });
-      prevLTier.current = "";
-      prevSTier.current = "";
     }
   }, []);
 

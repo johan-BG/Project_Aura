@@ -15,7 +15,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   const [openFee, setOpenFee] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [loading,setLoading]=useState(null);
+  const [loading,setLoading]=useState(false);
   const [fee, setFee] = useState(0);
   const [slippage, setSlippage] = useState(25);
   const [deadline, setDeadline] = useState(20);
@@ -38,7 +38,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   });
 
   const handleRemoveLiquidity = async (params) => {
-    setLoading(params);
+    setLoading(true);
     try {
       await createLiquidityAndPool(params);
       alert("Liquidity added successfully!");
@@ -46,7 +46,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
       console.error(error);
       alert("Failed to add liquidity. See console for details.");
     } finally {
-      setLoading(null);
+      setLoading(false);
       setClosePool(false);
     }
   };
@@ -356,8 +356,9 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
                     tokenAmount1: tokenAmountTwo,
                   })
                 }
+                disabled={loading}
               >
-                Add Liquidity
+                {loading?"Processing...":"Add Liquidity"}
               </button>
             </div>
           </div>

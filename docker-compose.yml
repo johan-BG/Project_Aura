@@ -5,11 +5,11 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev # Point to the new dev file
     ports:
       - "5000:5000"
     volumes:
-      - ./backend:/app
+      - ./backend:/app # Syncs your local python files to the container instantly
     env_file:
       - ./backend/.env
     networks:
@@ -17,9 +17,14 @@ services:
 
   # --- REACT FRONTEND ---
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev # Point to the new dev file
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app # Syncs your local Next.js files to the container
+      - /app/node_modules # Prevents your local node_modules from overwriting the container's modules
     environment:
       - NODE_ENV=development
     depends_on:

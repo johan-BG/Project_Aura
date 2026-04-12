@@ -18,6 +18,7 @@ const NavBar = () => {
   const [openTokenBox, setOpenTokenBox] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
+  const [isClaimed,setIsClaimed]= useState(false);
 
   return (
     <div className={Style.NavBar}>
@@ -66,7 +67,7 @@ const NavBar = () => {
               >
                 <Identicon string={account} size={25} bg="#fff" />
               </div>
-              {openProfile && <Profile account={account} />}
+              {openProfile && <Profile account={account} isClaimed={isClaimed} setIsClaimed={setIsClaimed}/>}
             </div>
           ) : (
             <button onClick={() => setOpenModel(true)}>Connect</button>

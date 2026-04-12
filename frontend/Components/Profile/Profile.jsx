@@ -8,7 +8,7 @@ import { useSwapContext } from '../../Context/SwapContext';
 import { claimBonus } from '../../Utils/claimBonus';
 
 
-const Profile = ({ account }) => {
+const Profile = ({ account,isClaimed,setIsClaimed }) => {
   const { refreshData,provider, signer ,networkName,contracts } = useSwapContext();
   
   const [investmentTier] = useState("Bronze");
@@ -16,7 +16,7 @@ const Profile = ({ account }) => {
   const [swapTier] = useState("Bronze");
   const [swapProgress] = useState(0);
 
-  const [isClaimed, setIsClaimed] = useState(false);
+  //const [isClaimed, setIsClaimed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Optional: Add logic here to check if the user has already claimed the bonus

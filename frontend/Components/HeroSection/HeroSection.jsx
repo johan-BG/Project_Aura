@@ -195,8 +195,8 @@ const HeroSection = () => {
         {/* ACTION BUTTON */}
         {account ? (
           
-          <button className={Style.HeroSection_box_btn} onClick={handleSwapExecute}>
-              { !loading? "Swap" : "Processing" }
+          <button className={Style.HeroSection_box_btn} onClick={handleSwapExecute} disabled={loading}>
+              { !loading? "Swap" : "Processing...." }
           </button>
         ) : (
           <button className={Style.HeroSection_box_btn} onClick={connectWallet}>
