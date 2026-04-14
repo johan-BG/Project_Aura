@@ -19,7 +19,7 @@ const HeroSection = () => {
   const [tokenSwapOutPut, setTokenSwapOutPut] = useState("");
   const [poolMessage, setPoolMessage] = useState("");
   const [isOut, setIsOut] = useState(false); // false = exactInput, true = exactOutput
-
+  const [disable,setDisable] = useState(false);
   const [tokenOne, setTokenOne] = useState({
     name: "", image: "", symbol: "", tokenBalance: "", tokenAddress: "",decimals: ""
   });
@@ -48,20 +48,25 @@ const HeroSection = () => {
     }
     if( tokenOne.tokenAddress=="" || tokenTwo.tokenAddress=="" ) {
       setPoolMessage("Please provide token details");
+      setDisable(true);
       return;
     }
     setSearch(true);
     try {
       // Pass the current direction directly to avoid React stale state issues
-      const data = await getSwapQuote(
+      const result = await getSwapQuote(
         isOutputDirection,
         tokenOne.tokenAddress,
         tokenTwo.tokenAddress,
         3000,
         isOutputDirection?value*0.9995:value
       )
-
-      if (data) {
+      if(!result.swap){
+          setPoolMessage(result.error);
+          setDisable(true);
+      }
+       else {
+        const data = result.amount;
         if (isOutputDirection) {
           const amountOut=ethers.utils.formatUnits(data,tokenTwo.decimals);
           setTokenSwapOutPut(amountOut);
@@ -70,10 +75,15 @@ const HeroSection = () => {
           // If user types in the bottom box, we estimate the top box input required
           //setSwapAmount(data); 
           const amountIn =Number(ethers.utils.formatUnits(data, tokenOne.decimals)) * 1.0005;
-
-          setPoolMessage(
-            `Requires ~${amountIn.toString().slice(0,7)} ${tokenOne.symbol} for ${value} ${tokenTwo.symbol}`
-          );
+          if(amountIn>tokenOne.tokenBalance)
+          {
+            setPoolMessage("You don't have enough balance");
+            setDisable(true);
+          }
+          else
+            setPoolMessage(
+              `Requires ~${amountIn.toString().slice(0,7)} ${tokenOne.symbol} for ${value} ${tokenTwo.symbol}`
+            );
         }
       }
     } catch (error) {
@@ -86,16 +96,24 @@ const HeroSection = () => {
   };
 
   const handleTopInputChange = (e) => {
-    const val = e.target.value;
+    const val = Number(e.target.value);
+    setDisable(false);
+    if(tokenOne.tokenAddress && val>tokenOne.tokenBalance)
+    {
+      setDisable(true);
+      setPoolMessage("You don't have enough balance");
+    }
+    else
+      fetchPrice(val, true);
     setSwapAmount(val);
     setIsOut(true);
-    fetchPrice(val, true);
   };
 
   const handleBottomInputChange = (e) => {
     const val = e.target.value;
     setTokenSwapOutPut(val);
     setIsOut(false);
+    setDisable(false);
     fetchPrice(val, false);
   };
 
@@ -195,7 +213,7 @@ const HeroSection = () => {
         {/* ACTION BUTTON */}
         {account ? (
           
-          <button className={Style.HeroSection_box_btn} onClick={handleSwapExecute} disabled={loading}>
+          <button className={Style.HeroSection_box_btn} onClick={handleSwapExecute} disabled={loading || disable}>
               { !loading? "Swap" : "Processing...." }
           </button>
         ) : (

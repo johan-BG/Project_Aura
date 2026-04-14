@@ -84,6 +84,7 @@ export const LiquidityProvider = ({ children }) => {
 
     // --- 3. Create Pool & Add Liquidity ---
     const createLiquidityAndPool = async (params) => {
+        setIsLoading(true);
         try {
             if (!signer && !provider) return;
                 const target = signer || provider;
@@ -116,10 +117,13 @@ export const LiquidityProvider = ({ children }) => {
             );
 
             // Refresh the list after saving
-            fetchUserPositions();
-            refreshData();
+            await fetchUserPositions();
+            await refreshData();
         } catch (error) {
             console.error("Operation failed:", error);
+        }
+        finally{
+            setIsLoading(false);
         }
     };
 
@@ -130,8 +134,8 @@ export const LiquidityProvider = ({ children }) => {
             setIsLoading(true);
             const receipt= await removeLiquidity(tokenId,contracts,account);
             await contracts.userStorage.removeTransaction(tokenId);
-            fetchUserPositions();
-            refreshData();
+            await fetchUserPositions();
+            await refreshData();
         }
         catch(e)
         {

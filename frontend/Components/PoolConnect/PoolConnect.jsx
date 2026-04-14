@@ -12,7 +12,7 @@ const PoolConnect = ({setClosePool,getAllLiquidity,removeLiquidityAndUpdateUserd
     setLoading(tokenId);
     try {
       await removeLiquidityAndUpdateUserdata(tokenId);
-      alert("Liquidity removed successfully!");
+      //alert("Liquidity removed successfully!");
     } catch (error) {
       console.error(error);
       alert("Failed to remove liquidity. See console for details.");

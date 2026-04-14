@@ -32,7 +32,7 @@ export const SwapTokenContextProvider = ({ children }) => {
   const [tokenData, setTokenData] = useState([]);
   const [isConnecting, setIsConnecting] = useState(false);
   const [topTokens,setTopTokens]=useState([]);
-  const [contracts, setContracts] = useState({ router: null, quoter: null ,singleSwapToken: null, auraCoin: null, userStorageData: null});
+  const [contracts, setContracts] = useState({ router: null, quoter: null ,singleSwapToken: null, auraCoin: null, userStorageData: null, factory:null});
   const [hasClaimed, setHasClaimed] = useState(false);
   const [allTransactions, setAllTransactions] = useState([]);
   const [Lpercentage,setLpercentage]=useState(0);
@@ -152,12 +152,29 @@ export const SwapTokenContextProvider = ({ children }) => {
 const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     
   try{
+    let amountOut;
+    const poolAddress = await contracts.factory.getPool(tokenIn, tokenOut, fee);
+    if (poolAddress === ethers.constants.AddressZero) {
+            return { 
+                swap:false,
+                error: "Pool does not exist for this token pair and fee tier." 
+            };
+        }
+    const poolContract = new ethers.Contract(poolAddress, ARTIFACTS.pool, readProvider);
+    const liquidity = await poolContract.liquidity();
+
+    if (liquidity.isZero()) {
+          return { 
+              swap:false,
+              error:"Pool has no liquidity"
+          };
+      }
     if (!contracts.quoter) return;
 
       const amountWei = ethers.utils.parseUnits(amount.toString(), 18); // Adjust decimals as needed
 
       if (isExactInput) {
-        return await getQuoteExactInput(contracts.quoter, {
+        amountOut = await getQuoteExactInput(contracts.quoter, {
           tokenIn,
           tokenOut,
           fee,
@@ -165,7 +182,14 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
           sqliteSqrtPriceLimitX96:0
         });
       } else {
-        return await getQuoteExactOutput(contracts.quoter, {
+        const tokenOutContract = new ethers.Contract(tokenOut, ARTIFACTS.ERC20, readProvider);
+        const poolBalance = await tokenOutContract.balanceOf(poolAddress);
+        if(Number(poolBalance) <= Number(amountWei))
+          return {
+            swap:false,
+            error:"Pool does not have sufficient balance"
+          };
+        amountOut = await getQuoteExactOutput(contracts.quoter, {
           tokenIn,
           tokenOut,
           fee,
@@ -173,6 +197,11 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
           sqliteSqrtPriceLimitX96:0
         });
       }
+      return {
+        swap:true,
+        amount:amountOut
+      };
+      
     }
     catch(e)
     {
@@ -236,10 +265,11 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     const target = signer || provider;
 
     setContracts({
-      quoter: new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, target), // Preloaded
-      singleSwapToken:new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target),
+      quoter: activeConfig?.contracts?.quoter ? new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, target):null, // Preloaded
+      singleSwapToken: activeConfig?.contracts?.singleSwapToken ? new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target):null,
       auraCoin: activeConfig?.contracts?.aura ? new ethers.Contract(activeConfig.contracts.aura, ARTIFACTS.aura, target) : null,
-      userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null
+      userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null,
+      factory:activeConfig?.contracts?.factory ? new ethers.Contract(activeConfig.contracts.factory,ARTIFACTS.factory,target):null
     });
   }, [signer, provider, activeConfig]);
 
