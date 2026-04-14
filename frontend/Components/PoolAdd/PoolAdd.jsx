@@ -11,12 +11,12 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   const [openModel, setOpenModel] = useState(false);
   const [openTokenModelOne, setOpenTokenModelOne] = useState(false);
   const [openTokenModelTwo, setOpenTokenModelTwo] = useState(false);
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(2);
   const [openFee, setOpenFee] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const [loading,setLoading]=useState(false);
-  const [fee, setFee] = useState(0);
+  const [fee, setFee] = useState(3000);
   const [slippage, setSlippage] = useState(25);
   const [deadline, setDeadline] = useState(20);
   const [tokenAmountOne, setTokenAmountOne] = useState(0);
@@ -41,7 +41,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
     setLoading(true);
     try {
       await createLiquidityAndPool(params);
-      alert("Liquidity added successfully!");
+      //alert("Liquidity added successfully!");
     } catch (error) {
       console.error(error);
       alert("Failed to add liquidity. See console for details.");

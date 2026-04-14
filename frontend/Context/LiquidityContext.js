@@ -109,12 +109,13 @@ export const LiquidityProvider = ({ children }) => {
             );
           
             // Save to your custom UserStorage smart contract
-            await contracts.userStorage.addToBlockchain(
+            const tx = await contracts.userStorage.addToBlockchain(
                 poolAddress,
                 params.token1.tokenAddress,
                 params.token1.tokenAddress,
                 info
             );
+            await tx.wait();
 
             // Refresh the list after saving
             await fetchUserPositions();
