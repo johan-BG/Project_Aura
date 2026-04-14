@@ -150,29 +150,9 @@ export const SwapTokenContextProvider = ({ children }) => {
 }, [activeConfig?.subgraphUrl]);
 
 const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
-    
+  const amountWei = ethers.utils.parseUnits(amount.toString(), 18); // Adjust decimals as needed
   try{
-    let amountOut;
-    const poolAddress = await contracts.factory.getPool(tokenIn, tokenOut, fee);
-    if (poolAddress === ethers.constants.AddressZero) {
-            return { 
-                swap:false,
-                error: "Pool does not exist for this token pair and fee tier." 
-            };
-        }
-    const poolContract = new ethers.Contract(poolAddress, ARTIFACTS.pool, readProvider);
-    const liquidity = await poolContract.liquidity();
-
-    if (liquidity.isZero()) {
-          return { 
-              swap:false,
-              error:"Pool has no liquidity"
-          };
-      }
-    if (!contracts.quoter) return;
-
-      const amountWei = ethers.utils.parseUnits(amount.toString(), 18); // Adjust decimals as needed
-
+      let amountOut;
       if (isExactInput) {
         amountOut = await getQuoteExactInput(contracts.quoter, {
           tokenIn,
@@ -182,13 +162,6 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
           sqliteSqrtPriceLimitX96:0
         });
       } else {
-        const tokenOutContract = new ethers.Contract(tokenOut, ARTIFACTS.ERC20, readProvider);
-        const poolBalance = await tokenOutContract.balanceOf(poolAddress);
-        if(Number(poolBalance) <= Number(amountWei))
-          return {
-            swap:false,
-            error:"Pool does not have sufficient balance"
-          };
         amountOut = await getQuoteExactOutput(contracts.quoter, {
           tokenIn,
           tokenOut,
@@ -205,7 +178,34 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     }
     catch(e)
     {
-      console.log("Price update failed",e);
+    const poolAddress = await contracts.factory.getPool(tokenIn, tokenOut, fee);
+    if (poolAddress === ethers.constants.AddressZero) {
+            return { 
+                swap:false,
+                error: "Pool does not exist for this token pair and fee tier." 
+            };
+        }
+    const poolContract = new ethers.Contract(poolAddress, ARTIFACTS.pool, readProvider);
+    const liquidity = await poolContract.liquidity();
+
+    if (liquidity.isZero()) {
+          return { 
+              swap:false,
+              error:"Pool has no liquidity"
+          };
+      }
+
+    const tokenOutContract = new ethers.Contract(tokenOut, ARTIFACTS.ERC20, readProvider);
+    const poolBalance = await tokenOutContract.balanceOf(poolAddress);
+    if(Number(poolBalance) <= Number(amountWei))
+      return {
+        swap:false,
+        error:"Pool does not have sufficient balance"
+      };
+    }
+    return {
+      swap:false,
+      error:"Quote faided"
     }
     };
 
@@ -265,7 +265,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     const target = signer || provider;
 
     setContracts({
-      quoter: activeConfig?.contracts?.quoter ? new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, target):null, // Preloaded
+      quoter: activeConfig?.contracts?.quoter ? new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, readProvider):null, // Preloaded
       singleSwapToken: activeConfig?.contracts?.singleSwapToken ? new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target):null,
       auraCoin: activeConfig?.contracts?.aura ? new ethers.Contract(activeConfig.contracts.aura, ARTIFACTS.aura, target) : null,
       userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null,

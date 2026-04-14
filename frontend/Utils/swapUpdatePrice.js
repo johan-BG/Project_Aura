@@ -6,7 +6,6 @@ import { ethers } from "ethers";
 export const getQuoteExactInput = async (quoterContract, params) => {
   const { tokenIn, tokenOut, fee, amountIn, sqliteSqrtPriceLimitX96 } = params;
 
-  try {
     // callStatic simulates the transaction without sending it to the blockchain
     const quotedAmountOut = await quoterContract.callStatic.quoteExactInputSingle({
       tokenIn: tokenIn,
@@ -16,10 +15,6 @@ export const getQuoteExactInput = async (quoterContract, params) => {
       sqrtPriceLimitX96: sqliteSqrtPriceLimitX96 || 0 // Must be 'sqrtPriceLimitX96'
     });
     return quotedAmountOut.amountOut.toString();
-  } catch (error) {
-    console.error("Quote Exact Input Error:", error);
-    return "0";
-  }
 };
 
 /**
@@ -27,7 +22,6 @@ export const getQuoteExactInput = async (quoterContract, params) => {
  */
 export const getQuoteExactOutput = async (quoterContract, params) => {
   const { tokenIn, tokenOut, fee, amountOut, sqliteSqrtPriceLimitX96 } = params;
-  try {
     const quotedAmountIn = await quoterContract.callStatic.quoteExactOutputSingle({
       tokenIn: tokenIn,
       tokenOut: tokenOut,
@@ -38,8 +32,4 @@ export const getQuoteExactOutput = async (quoterContract, params) => {
     });
 
     return quotedAmountIn[0].toString();
-  } catch (error) {
-    console.error("Quote Exact Output Error:", error);
-    return "0";
-  }
 };
