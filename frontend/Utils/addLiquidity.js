@@ -3,13 +3,13 @@ import { Token } from "@uniswap/sdk-core";
 import { Pool, Position, nearestUsableTick } from "@uniswap/v3-sdk";
 import { ARTIFACTS } from "../config";
 
-// Helper to create SDK Token instances efficiently
+
 const getSdkToken = (chainId, address, decimals, symbol, name) => {
   return new Token(chainId, address, parseInt(decimals), symbol, name);
 };
 
 
-// Helper to calculate ticks (Full Range or concentrated)
+
 const getTickRange = (tick, tickSpacing, isFullRange = false) => {
   if (isFullRange) {
     return {
@@ -22,7 +22,7 @@ const getTickRange = (tick, tickSpacing, isFullRange = false) => {
     upper: nearestUsableTick(tick, tickSpacing) + tickSpacing * 2,
   };
 };
-// ... inside your LiquidityProvider ...
+
 
 export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB , contracts ,signer ,account) => {
   
@@ -36,7 +36,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
 
     
 
-    // Check and Approve Token A
+    
     const allowanceA = await token0Contract.allowance(account, contracts.manager.address);
     if (allowanceA.lt(amount0Wei)) {
       
@@ -44,18 +44,18 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
       await txA.wait();
     }
 
-    // Check and Approve Token B
+    
     const allowanceB = await token1Contract.allowance(account, contracts.manager.address);
     if (allowanceB.lt(amount1Wei)) {
       
       const txB = await token1Contract.approve(contracts.manager.address, amount1Wei);
       await txB.wait();
     }
-    // 1. Re-use existing contracts from state
+    
     
     const poolContract = new ethers.Contract(poolAddress, ARTIFACTS.pool, signer);
     
-    // 2. Fetch Pool Data in parallel
+    
     const [tickSpacing, fee, liquidity, slot0, chainId] = await Promise.all([
       poolContract.tickSpacing(),
       poolContract.fee(),
@@ -64,7 +64,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
       signer.getChainId()
     ]);
 
-    // 3. Setup SDK Objects
+    
     const TokenA = getSdkToken(chainId, tokenA.tokenAddress, tokenA.decimals, tokenA.symbol, tokenA.name);
     const TokenB = getSdkToken(chainId, tokenB.tokenAddress, tokenB.decimals, tokenB.symbol, tokenB.name);
 
@@ -75,8 +75,8 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
       slot0.tick
     );
 
-    // 4. Calculate Position (using Mint Amounts)
-    const ticks = getTickRange(slot0.tick, tickSpacing,true); // True for Full Range
+    
+    const ticks = getTickRange(slot0.tick, tickSpacing,true); 
     
     let existingTokenId = null;
     const balance = await contracts.manager.balanceOf(account);
@@ -87,7 +87,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
       const tokenId = await contracts.manager.tokenOfOwnerByIndex(account, i);
       const positionData = await contracts.manager.positions(tokenId);
 
-      // Check if this NFT matches our Pool and Tick Range
+      
       const isSamePool = 
         positionData.token0.toLowerCase() === pool.token0.address.toLowerCase() &&
         positionData.token1.toLowerCase() === pool.token1.address.toLowerCase() &&
@@ -99,7 +99,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
 
       if (isSamePool && isSameRange) {
         existingTokenId = tokenId;
-        break; // Found it!
+        break; 
       }
     }
 
@@ -133,7 +133,7 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     else {
       
 
-    // 5. Execute Transaction
+    
     const params = {
       token0: pool.token0.address,
       token1: pool.token1.address,
@@ -158,9 +158,9 @@ export const addLiquidity = async (tokenA, tokenB, poolAddress, amountA, amountB
     throw new Error("Could not find IncreaseLiquidity event in transaction receipt.");
     }
 
-    // Extract the tokenId from the event arguments
+    
     const tokenId = event.args.tokenId.toString();
-    // Return the TokenID from the transfer event
+    
     return tokenId;
   } catch (error) {
     console.error("Add Liquidity Failed:", error);

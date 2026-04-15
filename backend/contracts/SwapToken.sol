@@ -102,12 +102,12 @@ contract SingleSwapToken {
         address pool = IUniswapV3Factory(factory).getPool(tokenIn, tokenOut, poolFee);
         require(pool != address(0), "Pool not found");
 
-        // 1. Collect FIXED FEE (Always) 👑
+    
         uint256 fixedFeeAmount = (amountIn * FIXED_FEE_BPS) / 10000;
         TransferHelper.safeTransferFrom(tokenIn, msg.sender, owner, fixedFeeAmount);
         uint256 swapAmount = amountIn - fixedFeeAmount;
 
-        // 2. Collect SCARCITY FEE (If neither token is CustomToken) 🤖
+      
         if (tokenIn != customToken && tokenOut != customToken) {
             (, int24 currentTick, , , , , ) = IUniswapV3Pool(pool).slot0();
             uint256 sFee = _calculateScarcityFee(pool, currentTick);
@@ -155,7 +155,7 @@ contract SingleSwapToken {
         uint256 fixedFeeAmount = (amountIn * FIXED_FEE_BPS) / 10000;
         TransferHelper.safeTransfer(token1, owner, fixedFeeAmount);
 
-        // 2. Collect SCARCITY FEE (If neither token is CustomToken) 🤖
+
         if (token1 != customToken && token2 != customToken) {
             (, int24 currentTick, , , , , ) = IUniswapV3Pool(pool).slot0();
             uint256 sFee = _calculateScarcityFee(pool, currentTick);

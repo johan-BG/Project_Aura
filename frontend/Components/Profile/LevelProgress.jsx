@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Style from './LevelProgress.module.css';
 
-// We will use inline SVGs as placeholders for Medals since assets don't exist yet
+
 const FMedal = () => (
     <svg viewBox="0 0 100 100" width="50" height="50">
         <circle cx="50" cy="50" r="45" fill="#ff4d4d" stroke="#cc0000" strokeWidth="5"/>
@@ -83,13 +83,13 @@ const DiamondMedal = () => (
 const LevelProgress = ({ title, tier = "Bronze", percentage, badgeText, size = 130 }) => {
   const [offset, setOffset] = useState(0);
   
-  // SVG Config
+  
   const strokeWidth = 12;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   
   useEffect(() => {
-    // Calculate final offset
+    
     const progressOffset = circumference - (percentage / 100) * circumference;
     setOffset(progressOffset);
   }, [percentage, circumference]);
@@ -152,7 +152,7 @@ const LevelProgress = ({ title, tier = "Bronze", percentage, badgeText, size = 1
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset: offset }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`} // Start from top
+            transform={`rotate(-90 ${size / 2} ${size / 2})`} 
           />
         </svg>
 

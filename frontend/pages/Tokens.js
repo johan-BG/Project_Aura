@@ -6,18 +6,18 @@ import { AllTokens } from "../Components/index";
 import { useSwapContext } from "../Context/SwapContext";
 
 const Tokens = () => {
-  const { topTokens } = useSwapContext(); // Pulling real data from Graph/Config
+  const { topTokens } = useSwapContext(); 
   const [searchItem, setSearchItem] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  // 1. Debounce Logic: Updates 'debouncedSearch' 500ms after user stops typing
+  
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchItem), 100);
     return () => clearTimeout(timer);
   }, [searchItem]);
 
-  // 2. Search Logic: Filters the topTokens list
-  // useMemo ensures we only re-filter when the list or the search term changes
+  
+  
   const filteredTokens = useMemo(() => {
     if (!topTokens) return [];
     if (!debouncedSearch) return topTokens;

@@ -16,7 +16,7 @@ export const LiquidityProvider = ({ children }) => {
     const [allLiquidity, setAllLiquidity] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    // --- 1. Load Contracts Once ---
+    
     useEffect(() => {
         if (!signer && !provider) return;
         const target = signer || provider;
@@ -27,36 +27,36 @@ export const LiquidityProvider = ({ children }) => {
         });
     }, [signer, provider, activeConfig]);
 
-    // --- 2. Fetch All User Positions ---
+    
     const fetchUserPositions = useCallback(async () => {
         if (!account || !contracts.manager || !contracts.factory) return;
         
         setIsLoading(true);
         try {
-            // Get number of NFTs owned by user
+            
             const allTxs = await contracts.userStorage.getAllTransactions(account);
             
-            // Filter out Swap logs (tokenId=0 or timestamps > 1T) so we only fetch actual LP NFTs
+            
             const nfts = allTxs.filter(tx => tx.tokenId.toString() !== "0" && Number(tx.tokenId.toString()) < 1000000000000);
 
             const liquidityResults = await Promise.all(
                 nfts.map(async (nft) => {
                     const positionInfo = await contracts.manager.positions(nft.tokenId);
                     
-                    // Skip empty positions with no pending fees (dust)
+                    
                     const hasLiquidity = positionInfo.liquidity.gt(0);
                     const hasDust = positionInfo.tokensOwed0.gt(0) || positionInfo.tokensOwed1.gt(0);
                     
                     if (!hasLiquidity && !hasDust) return null;
                     
-                    // Derive Pool Address from Factory (cached logic)
+                    
                     const poolAddress = await contracts.factory.getPool(
                         positionInfo.token0, 
                         positionInfo.token1, 
                         positionInfo.fee
                     );
 
-                    // Get detailed pricing/amount data from your Utils
+                    
                     const data = await getLiquidityData(
                         poolAddress,
                         positionInfo.token0,
@@ -82,7 +82,7 @@ export const LiquidityProvider = ({ children }) => {
         }
     }, [account, contracts, provider, signer]);
 
-    // --- 3. Create Pool & Add Liquidity ---
+    
     const createLiquidityAndPool = async (params) => {
         setIsLoading(true);
         try {
@@ -108,7 +108,7 @@ export const LiquidityProvider = ({ children }) => {
                 account
             );
           
-            // Save to your custom UserStorage smart contract
+            
             const tx = await contracts.userStorage.addToBlockchain(
                 poolAddress,
                 params.token1.tokenAddress,
@@ -117,7 +117,7 @@ export const LiquidityProvider = ({ children }) => {
             );
             await tx.wait();
 
-            // Refresh the list after saving
+            
             await fetchUserPositions();
             await refreshData();
         } catch (error) {
@@ -128,7 +128,7 @@ export const LiquidityProvider = ({ children }) => {
         }
     };
 
-    //Liquidity Removal
+    
 
     const removeLiquidityAndUpdateData= async(tokenId) => {
         try{

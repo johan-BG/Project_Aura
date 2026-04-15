@@ -15,14 +15,14 @@ const TOP_TOKENS_QUERY = `
   }
 }`;
 
-// 1. Create the Context
+
 const SwapTokenContext = createContext();
 
-// 2. Export a custom hook for easy access
+
 export const useSwapContext = () => useContext(SwapTokenContext);
 
 export const SwapTokenContextProvider = ({ children }) => {
-  // --- STATE ---
+  
   const [account, setAccount] = useState("");
   const [signer, setSigner] = useState(null);
   const [provider, setProvider] = useState(null);
@@ -44,21 +44,21 @@ export const SwapTokenContextProvider = ({ children }) => {
   const prevLTier = useRef("");
   const prevSTier = useRef("");
 
-  // --- HELPER: Get Active Network Config ---
+  
   const activeConfig = useMemo(() => {
   return NETWORKS[chainId] || NETWORKS[DEFAULT_CHAIN_ID];
 }, [chainId]);
 
-  // --- 3. CORE DATA LOADER ---
+  
   const fetchAccountData = useCallback(async (userAddr, currentProvider, currentChainId,contract) => {
     const config = NETWORKS[currentChainId];
     if (!config) return;
 
     try {
-      // Fetch Eth Balance
+      
       const ethBal = await currentProvider.getBalance(userAddr);
       
-      // Fetch Token Balances from Config
+      
       const tokens = await Promise.all(config.contracts.tokens.map(async (token) => {
         try {
           const contract = new ethers.Contract(token.address,ARTIFACTS.ERC20, currentProvider);
@@ -75,11 +75,11 @@ export const SwapTokenContextProvider = ({ children }) => {
 
       setTokenData(tokens.filter(Boolean));
 
-      // Fetch specific app data explicitly avoiding activeConfig checks
+      
       try {
          
           const txs = await contract.userStorageData.getAllTransactions(userAddr);
-          // Swaps are logged using Date.now() (timestamps > 1000000000000). LP Positions use basic sequential IDs (1, 2, 3...)
+          
           const swaps = txs.filter(tx => Number(tx.tokenId.toString()) >= 1000000000000 || tx.tokenId.toString() === "0");
           const pools = txs.filter(tx => Number(tx.tokenId.toString()) < 1000000000000 && tx.tokenId.toString() !== "0");
           setAllTransactions(txs);
@@ -102,7 +102,7 @@ export const SwapTokenContextProvider = ({ children }) => {
     }
   }, []);
 
-  // --- 4. WALLET CONNECTION ---
+  
   const connectWallet = async () => {
     try {
       setIsConnecting(true);
@@ -122,7 +122,7 @@ export const SwapTokenContextProvider = ({ children }) => {
       setChainId(chainId);
       setNetworkName(name);
 
-      //await fetchAccountData(address, newProvider, chainId);
+      
       await fetchTopTokens(netconfig.subgraphUrl);
     } catch (error) {
       console.error("Connection failed:", error);
@@ -133,13 +133,13 @@ export const SwapTokenContextProvider = ({ children }) => {
 
   const fetchTopTokens = useCallback(async (overrideURL) => {
   const url = overrideURL || activeConfig?.subgraphUrl;
-  if (!url) return setTopTokens([]); // Skip if no subgraph for this network (e.g. Localhost)
+  if (!url) return setTopTokens([]); 
 
   try {
     const { data } = await axios.post(url, { query: TOP_TOKENS_QUERY });
     const formatted = data.data.tokens.map(token => ({
       ...token,
-      address: token.id, // Aligning naming convention with local tokens
+      address: token.id, 
       logo: getLogoUrl(token.id)
     }));
     
@@ -150,7 +150,7 @@ export const SwapTokenContextProvider = ({ children }) => {
 }, [activeConfig?.subgraphUrl]);
 
 const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
-  const amountWei = ethers.utils.parseUnits(amount.toString(), 18); // Adjust decimals as needed
+  const amountWei = ethers.utils.parseUnits(amount.toString(), 18); 
   try{
       let amountOut;
       if (isExactInput) {
@@ -265,7 +265,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     const target = signer || provider;
 
     setContracts({
-      quoter: activeConfig?.contracts?.quoter ? new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, readProvider):null, // Preloaded
+      quoter: activeConfig?.contracts?.quoter ? new ethers.Contract(activeConfig.contracts.quoter, ARTIFACTS.quoter, readProvider):null, 
       singleSwapToken: activeConfig?.contracts?.singleSwapToken ? new ethers.Contract(activeConfig.contracts.singleSwapToken, ARTIFACTS.singleSwapToken, target):null,
       auraCoin: activeConfig?.contracts?.aura ? new ethers.Contract(activeConfig.contracts.aura, ARTIFACTS.aura, target) : null,
       userStorageData: activeConfig?.contracts?.userStorageData ? new ethers.Contract(activeConfig.contracts.userStorageData, ARTIFACTS.userStorgeData, target) : null,
@@ -289,12 +289,12 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
       const lTierChanged = Ltier !== prevLTier.current;
       const sTierChanged = Stier !== prevSTier.current;
       if (!hasPriorSession.current) {
-        // No prior session: Claim on the first valid tier fetch AND any future changes
+        
         if (Ltier && Ltier !== "" && lTierChanged) shouldClaimL = true;
         if (Stier && Stier !== "" && sTierChanged) shouldClaimS = true;
       } else {
-        // Had prior session: DO NOT claim on the initial data fetch (when prev is "")
-        // ONLY claim when moving from one valid tier to a NEW valid tier
+        
+        
         if (prevLTier.current !== "" && Ltier !== "" && lTierChanged) shouldClaimL = true;
         if (prevSTier.current !== "" && Stier !== "" && sTierChanged) shouldClaimS = true;
       }
@@ -307,7 +307,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
         console.error("Failed to claim bonus:", error);
       }
 
-      // Update refs for the next render
+      
       prevLTier.current = Ltier;
       prevSTier.current = Stier;
     };
@@ -315,7 +315,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     claimIfEligible();
   }, [Ltier, Stier, account, contracts.auraCoin, networkName]);
 
-  // --- 5. AUTOMATIC REFRESH ON ACCOUNT/CHAIN CHANGE ---
+  
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
@@ -328,7 +328,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     }
   }, []);
 
-  // Remove fetchTopTokens from connectWallet and use this:
+  
   useEffect(() => {
     if (chainId) {
       fetchTopTokens();
@@ -345,7 +345,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     }
   }, []);
 
-  // --- 6. CONTEXT VALUE ---
+  
   const value = {
     account,
     signer,

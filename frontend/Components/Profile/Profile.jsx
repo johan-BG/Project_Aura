@@ -16,11 +16,11 @@ const Profile = ({ account,isClaimed,setIsClaimed }) => {
   const [swapTier] = useState("Bronze");
   const [swapProgress] = useState(0);
 
-  //const [isClaimed, setIsClaimed] = useState(false);
+  
   const [isLoading, setIsLoading] = useState(false);
 
-  // Optional: Add logic here to check if the user has already claimed the bonus
-  // useEffect(() => { ... check contract or backend ... }, [account]);
+  
+  
 
   const handleClaimBonus = async () => {
     if (!account || !signer) return alert("Please connect wallet first");
@@ -36,7 +36,7 @@ const Profile = ({ account,isClaimed,setIsClaimed }) => {
     } catch (error) {
       console.error("Transaction Error:", error);
       
-      // If error contains "fetch" or "NetworkError", it means the backend isn't running
+      
       if (error instanceof TypeError && error.message.includes("fetch")) {
         alert("Server Error: The python backend (localhost:5000) is offline.");
       } else {
@@ -49,10 +49,10 @@ const Profile = ({ account,isClaimed,setIsClaimed }) => {
   };
 
   useEffect(() => {
-    // Lock global scrolling when Profile is open
+    
     document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = 'auto'; // Restore on close
+      document.body.style.overflow = 'auto'; 
     };
   }, []);
 

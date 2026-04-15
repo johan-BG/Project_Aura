@@ -8,7 +8,7 @@ import { useSwapContext } from "../../Context/SwapContext";
 import { useLiquidity } from "../../Context/LiquidityContext";
 
 const HeroSection = () => {
-  // --- STATE ---
+  
   const [openSetting, setOpenSetting] = useState(false);
   const { fetchUserPositions } = useLiquidity();
   const [openToken, setOpenToken] = useState(false);
@@ -18,7 +18,7 @@ const HeroSection = () => {
   const [swapAmount, setSwapAmount] = useState("");
   const [tokenSwapOutPut, setTokenSwapOutPut] = useState("");
   const [poolMessage, setPoolMessage] = useState("");
-  const [isOut, setIsOut] = useState(false); // false = exactInput, true = exactOutput
+  const [isOut, setIsOut] = useState(false); 
   const [disable,setDisable] = useState(false);
   const [tokenOne, setTokenOne] = useState({
     name: "", image: "", symbol: "", tokenBalance: "", tokenAddress: "",decimals: ""
@@ -27,18 +27,18 @@ const HeroSection = () => {
     name: "", image: "", symbol: "", tokenBalance: "", tokenAddress: "",decimals: ""
   });
 
-  // --- CONTEXT ---
-  // Fix: Do not use useContext() with a custom hook. Just call the hook.
+  
+  
   const {
     account,
     tokenData,
     provider,
     connectWallet,
-    singleSwap, // Make sure this is exported from your context! 
+    singleSwap, 
     getSwapQuote
   } = useSwapContext();
 
-  // --- HANDLERS ---
+  
   const fetchPrice = async (value, isOutputDirection) => {
     if (!value || value <= 0) {
       setTokenSwapOutPut("");
@@ -53,7 +53,7 @@ const HeroSection = () => {
     }
     setSearch(true);
     try {
-      // Pass the current direction directly to avoid React stale state issues
+      
       const result = await getSwapQuote(
         isOutputDirection,
         tokenOne.tokenAddress,
@@ -72,8 +72,8 @@ const HeroSection = () => {
           setTokenSwapOutPut(amountOut);
           setPoolMessage(`${value} ${tokenOne.symbol} = ${amountOut.slice(0,7)} ${tokenTwo.symbol}`);
         } else {
-          // If user types in the bottom box, we estimate the top box input required
-          //setSwapAmount(data); 
+          
+          
           const amountIn =Number(ethers.utils.formatUnits(data, tokenOne.decimals)) * 1.0005;
           if(amountIn>tokenOne.tokenBalance)
           {
@@ -124,7 +124,7 @@ const HeroSection = () => {
       isOut,
       tokenOne,
       tokenTwo,
-      swapAmount, // Send the exact typed amount
+      swapAmount, 
       tokenSwapOutPut,
       3000
     );

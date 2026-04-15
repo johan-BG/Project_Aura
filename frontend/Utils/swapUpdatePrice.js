@@ -6,13 +6,13 @@ import { ethers } from "ethers";
 export const getQuoteExactInput = async (quoterContract, params) => {
   const { tokenIn, tokenOut, fee, amountIn, sqliteSqrtPriceLimitX96 } = params;
 
-    // callStatic simulates the transaction without sending it to the blockchain
+    
     const quotedAmountOut = await quoterContract.callStatic.quoteExactInputSingle({
       tokenIn: tokenIn,
       tokenOut: tokenOut,
       fee: fee,
-      amountIn: amountIn, // Ensure this is a BigNumber or string
-      sqrtPriceLimitX96: sqliteSqrtPriceLimitX96 || 0 // Must be 'sqrtPriceLimitX96'
+      amountIn: amountIn, 
+      sqrtPriceLimitX96: sqliteSqrtPriceLimitX96 || 0 
     });
     return quotedAmountOut.amountOut.toString();
 };
@@ -27,7 +27,7 @@ export const getQuoteExactOutput = async (quoterContract, params) => {
       tokenOut: tokenOut,
       fee: fee,
       amount: amountOut,
-      // CRITICAL: The smart contract key MUST be 'sqrtPriceLimitX96'
+      
       sqrtPriceLimitX96: sqliteSqrtPriceLimitX96 || 0 
     });
 

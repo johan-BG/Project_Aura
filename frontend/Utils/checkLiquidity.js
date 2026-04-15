@@ -105,8 +105,8 @@ export const getLiquidityData = async (
     
     const positionInfo = await contracts.manager.positions(tokenId);
     
-    // 3. Create the Position Instance
-    // This uses the current pool price and the user's specific tick range
+    
+    
     const userPosition = new Position({
         pool: poolData.poolExample,
         liquidity: positionInfo.liquidity.toString(),
@@ -114,9 +114,9 @@ export const getLiquidityData = async (
         tickUpper: positionInfo.tickUpper,
     });
 
-    // 4. Calculate Current Token Amounts
-    // amount0 and amount1 are CurrencyAmount objects representing 
-    // exactly what the user would get if they withdrew RIGHT NOW.
+    
+    
+    
     const amount0Principal = parseFloat(userPosition.amount0.toFixed(6));
     const amount0Fees = parseFloat(ethers.utils.formatUnits(positionInfo.tokensOwed0, poolData.poolExample.token0.decimals));
     poolData.currentAmount0 = (amount0Principal + amount0Fees).toFixed(6);

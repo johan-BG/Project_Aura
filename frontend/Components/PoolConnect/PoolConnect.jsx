@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-// INTERNAL IMPORT
+
 import Style from "./PoolConnect.module.css";
 import images from "../../assets";
 
 const PoolConnect = ({setClosePool,getAllLiquidity,removeLiquidityAndUpdateUserdata,account, collectFees,connectWallet}) => {
-  const [loading, setLoading] = useState(null); // Store tokenId being processed
+  const [loading, setLoading] = useState(null); 
 
   const handleRemoveLiquidity = async (tokenId) => {
     setLoading(tokenId);
     try {
       await removeLiquidityAndUpdateUserdata(tokenId);
-      //alert("Liquidity removed successfully!");
+      
     } catch (error) {
       console.error(error);
       alert("Failed to remove liquidity. See console for details.");

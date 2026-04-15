@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
-// INTERNAL IMPORT
+
 import images from "../../assets";
 import Style from "./PoolAdd.module.css";
 import Token from "../Token/Token";
@@ -41,7 +41,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
     setLoading(true);
     try {
       await createLiquidityAndPool(params);
-      //alert("Liquidity added successfully!");
+      
     } catch (error) {
       console.error(error);
       alert("Failed to add liquidity. See console for details.");
@@ -122,43 +122,8 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
           </div>
         </div>
 
-        {/* //SELECT PRICE RANGE */}
+
         <div className={Style.PoolAdd_box_price}>
-          {/* //LEFT */}
-          {/* <div className={Style.PoolAdd_box_price_left}>
-            <h4>Select Pair</h4>
-
-            <div className={Style.PoolAdd_box_price_left_info}>
-              <div className={Style.PoolAdd_box_price_left_token_input}>
-                <p>
-                  <Image
-                    src={images.etherlogo}
-                    alt="image"
-                    width={20}
-                    height={20}
-                  />
-                </p>
-                <p>UNI</p>
-                <p>�</p>
-              </div>
-
-              <div
-                className={Style.PoolAdd_box_price_left_token_info}
-                onClick={() => setOpenTokenModel(true)}
-              >
-                <p>
-                  <Image
-                    src={images.etherlogo}
-                    alt="image"
-                    width={20}
-                    height={20}
-                  />
-                </p>
-                <p>WETH</p>
-                <p>�</p>
-              </div>
-            </div> */}
-
           <div className={Style.PoolAdd_box_price_left}>
             <h4>Select Pair</h4>
 
@@ -196,7 +161,6 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
               </div>
             </div>
 
-            {/* //FEE */}
             <div className={Style.PoolAdd_box_price_left_fee}>
               <div className={Style.PoolAdd_box_price_left_fee_left}>
                 <h4>Fee teir</h4>
@@ -210,7 +174,6 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
               )}
             </div>
 
-            {/* //FEE LIST */}
             {openFee && (
               <div className={Style.PoolAdd_box_price_left_list}>
                 {feePairs.map((el, i) => (
@@ -246,7 +209,6 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
               </div>
             )}
 
-            {/* //DEPOSIT AMOUNT */}
             <div className={Style.PoolAdd_box_deposit}>
               <h4>Deposit Amount</h4>
 
@@ -289,7 +251,6 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
             </div>
           </div>
 
-          {/* //RIGHT */}
           <div className={Style.PoolAdd_box_price_right}>
             <h4>Set Price Range</h4>
 
@@ -302,7 +263,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
               <h3>Your position will appear here.</h3>
             </div>
 
-            {/* //PRICE RANGE */}
+    
             <div className={Style.PoolAdd_box_price_right_range}>
               <div className={Style.PoolAdd_box_price_right_range_box}>
                 <p>Min Price</p>
@@ -319,7 +280,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
                 </p>
               </div>
 
-              {/* //MAX */}
+             
               <div className={Style.PoolAdd_box_price_right_range_box}>
                 <p>Max Price</p>
                 <input
@@ -336,10 +297,6 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
               </div>
             </div>
 
-            {/* //BUTTON */}
-            {/* <div className={Style.PoolAdd_box_price_right_button}>
-              <button>Full Range</button>
-            </div> */}
 
             <div className={Style.PoolAdd_box_price_right_amount}>
               <button
