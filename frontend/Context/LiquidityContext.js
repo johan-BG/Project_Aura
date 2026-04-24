@@ -134,7 +134,8 @@ export const LiquidityProvider = ({ children }) => {
         try{
             setIsLoading(true);
             const receipt= await removeLiquidity(tokenId,contracts,account);
-            await contracts.userStorage.removeTransaction(tokenId);
+            const tx = await contracts.userStorage.removeTransaction(tokenId);
+            await tx.wait();
             await fetchUserPositions();
             await refreshData();
         }

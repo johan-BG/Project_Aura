@@ -68,7 +68,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
       fee: "1%",
       info: "Best for stable pairs",
       number: "0% Select",
-      feeSystem: 1000,
+      feeSystem: 10000,
     },
   ];
 
