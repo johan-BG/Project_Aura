@@ -5,3 +5,9 @@ build
 .package-lock.json
 env
 artifacts
+contracts
+scripts
+test
+hardhat.config.js
+package.json
+package-lock.json
