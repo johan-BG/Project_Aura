@@ -118,6 +118,11 @@ const HeroSection = () => {
   };
 
   const handleSwapExecute = async() => {
+    if(swapAmount==0 || tokenSwapOutPut==0)
+    {
+      setPoolMessage("Please provide valid input");
+      return;
+    }
     if (!singleSwap) return console.error("Swap function missing from Context");
     setLoading(true);
     await singleSwap(

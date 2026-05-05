@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 
 
@@ -21,6 +21,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   const [deadline, setDeadline] = useState(20);
   const [tokenAmountOne, setTokenAmountOne] = useState(0);
   const [tokenAmountTwo, setTokenAmountTwo] = useState(0);
+  const [poolMessage,setPoolMessage] = useState("");
 
   const [tokenOne, setTokenOne] = useState({
     name: "",
@@ -36,9 +37,26 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
     tokenBalance: "",
     tokenAddress: "",
   });
+  
+  useMemo(()=>{
+    if(poolMessage!="")
+      setPoolMessage("");
+  },[tokenOne,tokenTwo,tokenAmountOne,tokenAmountTwo,minPrice,maxPrice]);
 
   const handleRemoveLiquidity = async (params) => {
     setLoading(true);
+    if(tokenOne.tokenAddress=="" || tokenTwo.tokenAddress=="" || tokenAmountOne==0 || tokenAmountTwo==0 || minPrice<=0 || maxPrice<=0)
+    {
+      setPoolMessage("Give valid and complete information");
+      setLoading(false);
+      return;
+    }
+    if(tokenOne.tokenBalance<tokenAmountOne || tokenTwo.tokenBalance<tokenAmountTwo)
+    {
+      setPoolMessage("Insufficient balance");
+      setLoading(false);
+      return;
+    }
     try {
       await createLiquidityAndPool(params);
       
@@ -55,19 +73,19 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
     {
       fee: "0.05%",
       info: "Best for stable pairs",
-      number: "0% Select",
+      number: "Select 0.05%",
       feeSystem: 500,
     },
     {
       fee: "0.3%",
       info: "Best for stable pairs",
-      number: "0% Select",
+      number: "Select 0.3%",
       feeSystem: 3000,
     },
     {
       fee: "1%",
       info: "Best for stable pairs",
-      number: "0% Select",
+      number: "Select 1%",
       feeSystem: 10000,
     },
   ];
@@ -141,7 +159,6 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
                   />
                 </p>
                 <p>{tokenOne.name || "ETH"}</p>
-                <p>�</p>
               </div>
 
               <div
@@ -157,7 +174,6 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
                   />
                 </p>
                 <p>{tokenTwo.name || "ETH"}</p>
-                <p>�</p>
               </div>
             </div>
 
@@ -318,6 +334,9 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
                 {loading?"Processing...":"Add Liquidity"}
               </button>
             </div>
+              <div className={Style.PoolAdd_box_price_right_message}>
+                <small>{poolMessage}</small>
+              </div>
           </div>
         </div>
       </div>

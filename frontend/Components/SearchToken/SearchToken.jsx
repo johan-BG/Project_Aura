@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Style from "./SearchToken.module.css";
 import images from "../../assets";
 
 const SearchToken = ({ setOpenToken, tokens, tokenData }) => {
   const [active, setActive] = useState(1);
+  const [tokenList,setTokenList] = useState(tokenData);
   const coin = [
     {
       img: images.ether,
@@ -35,6 +36,15 @@ const SearchToken = ({ setOpenToken, tokens, tokenData }) => {
       name: "BOO",
     },
   ];
+  const handleSearch = (e) => {
+    const item = e.target.value;
+    const newList = tokenData.filter((token) => {
+      const name = token.name?.toLowerCase() || "";
+      const symbol = token.symbol?.toLowerCase() || "";
+      return name.includes(item) || symbol.includes(item);
+    })
+    setTokenList(newList);
+  }
   return (
     <div className={Style.SearchToken}>
       <div className={Style.SearchToken_box}>
@@ -52,10 +62,10 @@ const SearchToken = ({ setOpenToken, tokens, tokenData }) => {
           <div className={Style.SearchToken_box_search_img}>
             <Image src={images.search} alt="img" width={20} height={20} />
           </div>
-          <input type="text" placeholder="Search name and paste the address" />
+          <input type="text" placeholder="Search name and paste the address" onChange={handleSearch}/>
         </div>
         <div className={Style.SearchToken_box_tokens}>
-          {tokenData.map((el, i) => (
+          {tokenList.map((el, i) => (
             <span
               key={i + 1}
               className={active == i + 1 ? `${Style.active}` : ""}

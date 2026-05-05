@@ -220,6 +220,13 @@
   z-index: 1000;
 }
 
+.PoolAdd_box_price_right_message {
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    color: #cff80b;
+    min-height: 1.5rem;
+}
+
 /* --- MEDIA QUERIES (The Reactivity) --- */
 
 @media only screen and (min-width: 48em) {
