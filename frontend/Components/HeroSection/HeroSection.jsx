@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
 import Style from "./HeroSection.module.css";
@@ -20,6 +20,7 @@ const HeroSection = () => {
   const [poolMessage, setPoolMessage] = useState("");
   const [isOut, setIsOut] = useState(false); 
   const [disable,setDisable] = useState(false);
+  const [fee,setFee]=useState(10000)
   const [tokenOne, setTokenOne] = useState({
     name: "", image: "", symbol: "", tokenBalance: "", tokenAddress: "",decimals: ""
   });
@@ -32,13 +33,21 @@ const HeroSection = () => {
   const {
     account,
     tokenData,
+    Stier,
     provider,
     connectWallet,
     singleSwap, 
     getSwapQuote
   } = useSwapContext();
 
-  
+  useEffect(()=>{
+    if(Stier=="Diamond" || Stier=="Platinum")
+      setFee(500);
+    else if(Stier=="Gold" || Stier=="Silver")
+      setFee(3000);
+    else
+      setFee(10000);
+  },[Stier])
   const fetchPrice = async (value, isOutputDirection) => {
     if (!value || value <= 0) {
       setTokenSwapOutPut("");
@@ -70,7 +79,7 @@ const HeroSection = () => {
         if (isOutputDirection) {
           const amountOut=ethers.utils.formatUnits(data,tokenTwo.decimals);
           setTokenSwapOutPut(amountOut);
-          setPoolMessage(`${value} ${tokenOne.symbol} = ${amountOut.slice(0,7)} ${tokenTwo.symbol}`);
+          setPoolMessage(`${value} ${tokenOne.symbol} = ${amountOut.slice(0,7)} ${tokenTwo.symbol} for a fee of ${fee/10000}%`);
         } else {
           
           
@@ -82,7 +91,7 @@ const HeroSection = () => {
           }
           else
             setPoolMessage(
-              `Requires ~${amountIn.toString().slice(0,7)} ${tokenOne.symbol} for ${value} ${tokenTwo.symbol}`
+              `Requires ${amountIn.toString().slice(0,7)} ${tokenOne.symbol} for ${value} ${tokenTwo.symbol} for a fee of ${fee/10000}%`
             );
         }
       }
@@ -131,7 +140,7 @@ const HeroSection = () => {
       tokenTwo,
       swapAmount, 
       tokenSwapOutPut,
-      3000
+      fee
     );
     fetchUserPositions();
     setSwapAmount("");

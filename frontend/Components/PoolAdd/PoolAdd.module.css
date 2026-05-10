@@ -103,6 +103,15 @@
   padding: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.disabled {
+  opacity: 0.4;                /* Dims the element */
+  pointer-events: none;        /* Blocks all clicks, hovers, and active states */
+  cursor: not-allowed;         /* Shows 'stop' icon (though pointer-events may hide it) */
+  filter: grayscale(1);        /* Optional: makes it look more "inactive" */
+  border-color: #555;          /* Optional: changes border to a neutral gray */
 }
 
 .PoolAdd_box_price_left_list_item_para {

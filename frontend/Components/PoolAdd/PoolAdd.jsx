@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 
-
+import { useSwapContext } from "../../Context/SwapContext"; 
 import images from "../../assets";
 import Style from "./PoolAdd.module.css";
 import Token from "../Token/Token";
@@ -11,7 +11,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   const [openModel, setOpenModel] = useState(false);
   const [openTokenModelOne, setOpenTokenModelOne] = useState(false);
   const [openTokenModelTwo, setOpenTokenModelTwo] = useState(false);
-  const [active, setActive] = useState(2);
+  const [active, setActive] = useState(1);
   const [openFee, setOpenFee] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
@@ -22,7 +22,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   const [tokenAmountOne, setTokenAmountOne] = useState(0);
   const [tokenAmountTwo, setTokenAmountTwo] = useState(0);
   const [poolMessage,setPoolMessage] = useState("");
-
+  const {Ltier}=useSwapContext();
   const [tokenOne, setTokenOne] = useState({
     name: "",
     image: "",
@@ -75,18 +75,21 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
       info: "Best for stable pairs",
       number: "Select 0.05%",
       feeSystem: 500,
+      tiers:["F","D","C","B","A","S"]
     },
     {
       fee: "0.3%",
       info: "Best for stable pairs",
       number: "Select 0.3%",
       feeSystem: 3000,
+      tiers:["C","B","A","S"]
     },
     {
       fee: "1%",
       info: "Best for stable pairs",
       number: "Select 1%",
       feeSystem: 10000,
+      tiers:["A","S"]
     },
   ];
 
@@ -194,7 +197,9 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
               <div className={Style.PoolAdd_box_price_left_list}>
                 {feePairs.map((el, i) => (
                   <div
-                    className={Style.PoolAdd_box_price_left_list_item}
+                    className={`${Style.PoolAdd_box_price_left_list_item} ${
+                                el.tiers.includes(Ltier) ? "":Style.disabled
+                              }`}
                     key={i + 1}
                     onClick={() => (setActive(i + 1), setFee(el.feeSystem))}
                   >
