@@ -3,7 +3,10 @@ import Image from "next/image";
 import Style from "./Token.module.css";
 import images from '../../assets';
 import {Toggle} from "../index";
-const Token = ({setOpenSetting,setSlippage,slippage,deadline,setDeadline}) => {
+const Token = ({setOpenSetting,setSlippage,slippage,deadline,setDeadline,txDeadline,setTxDeadline}) => {
+    useEffect(() => {
+    console.log("txDeadline changed to:", txDeadline);
+  }, [txDeadline]);
   return (
     <div className={Style.Token}>
         <div className={Style.Token_box}>
@@ -24,13 +27,17 @@ const Token = ({setOpenSetting,setSlippage,slippage,deadline,setDeadline}) => {
                 <Image src={images.lock} alt="img" width={20} height={20}/>
             </p>
             <div className={Style.Token_box_input}>
-                <input type="text" placeholder={deadline} onChange={(e)=>(setDeadline(e.target.value),console.log(deadline))}/>
+                <input type="text" placeholder={deadline} onChange={(e)=>(setDeadline(e.target.value))}/>
                 <button>minutes</button>
             </div>
             <h2>Interface Setting</h2>
             <div className={Style.Token_box_toggle}>
                 <p className={Style.Token_box_para}>Transaction daedline</p>
-                <Toggle label="No"/>
+                <Toggle 
+                    label={txDeadline ? "Yes" : "No"} 
+                    checked={txDeadline}
+                    onChange={() => setTxDeadline(prev => !prev)} 
+                />
             </div>
         </div>
     </div>

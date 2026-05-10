@@ -39,7 +39,9 @@ export const SwapTokenContextProvider = ({ children }) => {
   const [Spercentage,setSpercentage]=useState(0);
   const [Ltier,setLTier]=useState("");
   const [Stier,setSTier]=useState("");
-
+  const [slippage, setSlippage] = useState(25);
+  const [deadline, setDeadline] = useState(20);
+  const [txDeadline,setTxDeadline]=useState(false)
   const hasPriorSession = useRef(!!getSession());
   const prevLTier = useRef("");
   const prevSTier = useRef("");
@@ -363,6 +365,12 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     Stier,
     Spercentage,
     Lpercentage,
+    deadline,
+    setDeadline,
+    slippage,
+    setSlippage,
+    txDeadline,
+    setTxDeadline,
     contracts,
     getSwapQuote,
     connectWallet,

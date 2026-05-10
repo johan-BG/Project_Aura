@@ -17,12 +17,10 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   const [maxPrice, setMaxPrice] = useState(0);
   const [loading,setLoading]=useState(false);
   const [fee, setFee] = useState(500);
-  const [slippage, setSlippage] = useState(25);
-  const [deadline, setDeadline] = useState(20);
   const [tokenAmountOne, setTokenAmountOne] = useState(0);
   const [tokenAmountTwo, setTokenAmountTwo] = useState(0);
   const [poolMessage,setPoolMessage] = useState("");
-  const {Ltier}=useSwapContext();
+  const {Ltier,deadline,setDeadline,slippage,setSlippage,txDeadline,setTxDeadline}=useSwapContext();
   const [tokenOne, setTokenOne] = useState({
     name: "",
     image: "",
@@ -51,7 +49,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
       setLoading(false);
       return;
     }
-    if(tokenOne.tokenBalance<tokenAmountOne || tokenTwo.tokenBalance<tokenAmountTwo)
+    if(Number(tokenOne.tokenBalance)<Number(tokenAmountOne) || Number(tokenTwo.tokenBalance)<Number(tokenAmountTwo))
     {
       setPoolMessage("Insufficient balance");
       setLoading(false);
@@ -354,6 +352,8 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
             slippage={slippage}
             deadline={deadline}
             setDeadline={setDeadline}
+            txDeadline={txDeadline}
+            setTxDeadline={setTxDeadline}
           />
         </div>
       )}

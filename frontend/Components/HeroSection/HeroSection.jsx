@@ -37,7 +37,13 @@ const HeroSection = () => {
     provider,
     connectWallet,
     singleSwap, 
-    getSwapQuote
+    getSwapQuote,
+    deadline,
+    setDeadline,
+    slippage,
+    setSlippage,
+    txDeadline,
+    setTxDeadline,
   } = useSwapContext();
 
   useEffect(()=>{
@@ -238,7 +244,7 @@ const HeroSection = () => {
       </div>
 
       {/* MODALS */}
-      {openSetting && <Token setOpenSetting={setOpenSetting} />}
+      {openSetting && <Token setOpenSetting={setOpenSetting} setSlippage={setSlippage} slippage={slippage} deadline={deadline} setDeadline={setDeadline} txDeadline={txDeadline} setTxDeadline={setTxDeadline}/>}
       
       {openToken && (
         <SearchToken setOpenToken={setOpenToken} tokens={setTokenOne} tokenData={tokenData} />
