@@ -16,7 +16,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const [loading,setLoading]=useState(false);
-  const [fee, setFee] = useState(3000);
+  const [fee, setFee] = useState(500);
   const [slippage, setSlippage] = useState(25);
   const [deadline, setDeadline] = useState(20);
   const [tokenAmountOne, setTokenAmountOne] = useState(0);
