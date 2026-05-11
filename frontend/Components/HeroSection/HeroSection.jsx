@@ -47,9 +47,9 @@ const HeroSection = () => {
   } = useSwapContext();
 
   useEffect(()=>{
-    if(Stier=="Diamond" || Stier=="Platinum")
+    if(Stier==="Diamond" || Stier==="Platinum")
       setFee(500);
-    else if(Stier=="Gold" || Stier=="Silver")
+    else if(Stier==="Gold" || Stier==="Silver")
       setFee(3000);
     else
       setFee(10000);
@@ -73,7 +73,7 @@ const HeroSection = () => {
         isOutputDirection,
         tokenOne.tokenAddress,
         tokenTwo.tokenAddress,
-        3000,
+        fee,
         isOutputDirection?value*0.9995:value
       )
       if(!result.swap){
