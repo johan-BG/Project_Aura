@@ -14,6 +14,7 @@ CORS(app)
 
 # --- CONFIG ---
 MONGO_URI = os.getenv("ATLAS_URL")
+MONGO_LOCAL_URI="mongodb://host.docker.internal:27017"
 PRIVATE_KEY ={
     "localhost" :"0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
     "optimism-sepolia":os.getenv("ACCOUNT_KEY"),
@@ -24,7 +25,7 @@ print(MONGO_URI, PRIVATE_KEY)
 RPC_URLS = {
     "optimism-sepolia": "https://opt-sepolia.g.alchemy.com/v2/" + os.getenv("ALCHEMY_API_KEY"),
     "sepolia": "https://eth-sepolia.g.alchemy.com/v2/" + os.getenv("ALCHEMY_API_KEY"),  
-    "localhost": "http://127.0.0.1:8545"
+    "localhost": "http://host.docker.internal:8545"
 }
 
 AMOUNTs={
@@ -41,9 +42,15 @@ AMOUNTs={
     "A":500*10**18,
 }
 
-client = MongoClient(MONGO_URI)
-db = client["aura_project"]
-claims_collection = db["claims"]
+try:
+    client = MongoClient(MONGO_URI)
+    db = client["aura_project"]
+    claims_collection = db["claims"]
+except Exception as e:
+    print(f"Error connecting to MongoDB: {e}")
+    local_client = MongoClient(MONGO_LOCAL_URI)
+    local_db = local_client["aura_project"]
+    claims_collection = local_db["claims"]
 
 # --- HANDSHAKE 1: INITIATE & SIGN ---
 @app.route('/get-signature', methods=['POST'])
@@ -67,15 +74,15 @@ def get_signature():
 
     # Upsert as 'pending' (Handshake 1)
     claims_collection.update_one(
-        {"user_address": user_address, "level": level, "network": network},
-        {"$set": {
-            "amount": str(amount_to_claim),
-            "signature": signature,
-            "status": "pending",
-            "tx_hash": None
-        }},
-        upsert=True
-    )
+            {"user_address": user_address, "level": level, "network": network},
+            {"$set": {
+                "amount": str(amount_to_claim),
+                "signature": signature,
+                "status": "pending",
+                "tx_hash": None
+            }},
+            upsert=True
+        )
 
     return jsonify({"amount": str(amount_to_claim), "signature": signature})
 
@@ -92,13 +99,12 @@ def confirm_transaction():
         w3 = Web3(Web3.HTTPProvider(RPC_URLS[network]))
         # Wait for receipt to ensure it's mined
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=120)
-      
         if receipt.status == 1: # 1 = Success
             # Finalize Handshake (Update to completed)
             result = claims_collection.update_one(
-                {"user_address": user_address, "level": level, "status": "pending"},
-                {"$set": {"status": "completed", "tx_hash": tx_hash}}
-            )
+                    {"user_address": user_address, "level": level, "status": "pending"},
+                    {"$set": {"status": "completed", "tx_hash": tx_hash}}
+                )
             return jsonify({"success": True, "message": "Handshake complete. Claim verified."})
         else:
             return jsonify({"error": "Transaction failed on-chain."}), 400
@@ -109,3 +115,5 @@ def confirm_transaction():
 @app.route('/health')
 def health():
     return {"status": "online"}, 200
+# if __name__=="__main__":
+#     app.run(debug=True)

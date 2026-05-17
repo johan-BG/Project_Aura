@@ -14,6 +14,8 @@ services:
       - ./backend/.env
     networks:
       - aura-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # --- REACT FRONTEND ---
   frontend:
@@ -27,6 +29,7 @@ services:
       - /app/node_modules # Prevents your local node_modules from overwriting the container's modules
     environment:
       - NODE_ENV=development
+      - WATCHPACK_POLLING=true
     depends_on:
       - backend
     networks:
