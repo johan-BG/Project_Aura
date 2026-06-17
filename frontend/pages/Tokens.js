@@ -6,7 +6,7 @@ import { AllTokens } from "../Components/index";
 import { useSwapContext } from "../Context/SwapContext";
 
 const Tokens = () => {
-  const { topTokens } = useSwapContext(); 
+  const { topTokens, DISPLAYED_TOKENS } = useSwapContext(); 
   const [searchItem, setSearchItem] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
@@ -20,14 +20,15 @@ const Tokens = () => {
   
   const filteredTokens = useMemo(() => {
     if (!topTokens) return [];
-    if (!debouncedSearch) return topTokens;
+    if (!debouncedSearch) return topTokens.slice(0, DISPLAYED_TOKENS);
 
-    return topTokens.filter((token) => {
+    const result = topTokens.filter((token) => {
       const name = token.name?.toLowerCase() || "";
       const symbol = token.symbol?.toLowerCase() || "";
       const term = debouncedSearch.toLowerCase();
       return name.includes(term) || symbol.includes(term);
     });
+    return result.slice(0, DISPLAYED_TOKENS);
   }, [debouncedSearch, topTokens]);
 
   return (

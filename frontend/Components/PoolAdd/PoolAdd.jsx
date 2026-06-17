@@ -178,18 +178,13 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
               </div>
             </div>
 
-            <div className={Style.PoolAdd_box_price_left_fee}>
+            {!openFee && (<div className={Style.PoolAdd_box_price_left_fee}>
               <div className={Style.PoolAdd_box_price_left_fee_left}>
                 <h4>Fee teir</h4>
-                <p>The % you will earn in fees</p>
+                <p>You will earn {fee/1000}% in fees</p>
               </div>
-
-              {openFee ? (
-                <button onClick={() => setOpenFee(false)}>Hide</button>
-              ) : (
-                <button onClick={() => setOpenFee(true)}>Show</button>
-              )}
-            </div>
+                <button onClick={() => setOpenFee(true)}>Change fees</button>
+            </div>)}
 
             {openFee && (
               <div className={Style.PoolAdd_box_price_left_list}>
@@ -199,7 +194,7 @@ const PoolAdd = ({ setClosePool, tokenData, createLiquidityAndPool }) => {
                                 el.tiers.includes(Ltier) ? "":Style.disabled
                               }`}
                     key={i + 1}
-                    onClick={() => (setActive(i + 1), setFee(el.feeSystem))}
+                    onClick={() => (setActive(i + 1), setFee(el.feeSystem),setOpenFee(false))}
                   >
                     <div
                       className={Style.PoolAdd_box_price_left_list_item_content}

@@ -189,5 +189,6 @@ export const NETWORKS = {
     }
   }
 };
-export const TOKEN_RESULTS=20;
+export const TOKEN_RESULTS=40;
+export const DISPLAYED_TOKENS=10;
 export const DEFAULT_CHAIN_ID = 31337;

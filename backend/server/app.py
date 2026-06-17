@@ -115,5 +115,5 @@ def confirm_transaction():
 @app.route('/health')
 def health():
     return {"status": "online"}, 200
-# if __name__=="__main__":
-#     app.run(debug=True)
+if __name__=="__main__":
+    app.run(debug=True)

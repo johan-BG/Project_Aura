@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, useCallback ,useMemo,useRef} from "react";
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
-import { NETWORKS, DEFAULT_CHAIN_ID, ARTIFACTS ,TOKEN_RESULTS} from "../config";
+import { NETWORKS, DEFAULT_CHAIN_ID, ARTIFACTS ,TOKEN_RESULTS,DISPLAYED_TOKENS} from "../config";
 const axios =require("axios");
 import { getLogoUrl } from "../Utils/tokenHelper";
 import { getQuoteExactInput,getQuoteExactOutput } from "../Utils/swapUpdatePrice";
@@ -358,6 +358,7 @@ const getSwapQuote = async (isExactInput, tokenIn, tokenOut, fee, amount) => {
     activeConfig,
     isConnecting,
     topTokens,
+    DISPLAYED_TOKENS,
     hasClaimed,
     setHasClaimed,
     allTransactions,
